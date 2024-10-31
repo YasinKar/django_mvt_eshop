@@ -1,0 +1,173 @@
+{% extends 'shared/base.html' %}
+{% load humanize %}
+{% block page_title %}فروش ویژه{% endblock %}
+{% block meta_description %}فروش ویژه محصولات-{{site_setting.site_name}}{% endblock %}
+
+{% block content%}
+<main class="flex-grow bg-background pt-[106px]">
+    {% if products.exists %}
+    <!-- ‌Best Sale -->
+    <section class="container py-10">
+        <div class="flex gap-x-4 rounded-lg bg-gradient-to-l from-rose-500 to-red-500 px-1 py-3 shadow">
+            <div class="swiper product-slider-wrapped rounded-base grow p-px">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="flex h-full items-center justify-center">
+                            <div class="flex flex-col items-center justify-center space-y-4 text-white">
+                                <div class="i-solar-fire-outline size-12 stroke-2"></div>
+                                <div
+                                    class="flex select-none flex-col items-center justify-center space-y-2 text-lg font-semibold md:text-xl xl:text-2xl">
+                                    <p>پیشنهادات</p>
+                                    <p>شگفت</p>
+                                    <p>انگیز</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% for product in products %}
+                    {% if product.inventory == 1 %}
+                    <div class="swiper-slide">
+                        <a href="{% url 'product_detail_page' product.slug %}"
+                            class="relative block overflow-hidden rounded-r-lg bg-muted">
+                            <div class="mb-4 bg-secondary p-2 lg:p-4">
+                                <!-- Special Sale Percentage  -->
+                                <div
+                                    class="absolute right-2 top-0 rounded-b-full bg-warning px-1 py-1.5 text-center text-sm font-medium text-white md:text-base">
+                                    Off
+                                </div>
+                                <!-- Image -->
+                                <img src="{{product.image.url}}" alt="{{product.name}}"
+                                    class="aspect-[1/1] rounded-xl object-cover" />
+                            </div>
+                            <div class="mb-1 px-2 lg:px-4">
+                                <p class="line-clamp-2 h-10 text-sm xs:h-12 xs:text-base">
+                                    {{product.name}}
+                                </p>
+
+                                <div class="gap-x-1 text-end font-bold text-primary">
+                                    <div class="h-5 text-end text-sm text-text/50 xs:text-base">
+                                        <del>{{product.price}}</del>
+                                    </div>
+
+                                    <span class="text-sm xs:text-base">{{product.sale_price|intcomma}}</span>
+                                    <span class="text-sm font-light">تومان</span>
+                                </div>
+                            </div>
+                            <div class="h-8 px-2 lg:px-4">
+                            </div>
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    <!-- Show more -->
+                    {% if page_obj.has_next %}
+                    <div class="swiper-slide">
+                        <a href="?page={{ page_obj.next_page_number }}"
+                            class="flex h-full items-center justify-center rounded-l-lg bg-muted">
+                            <div class="flex flex-col items-center justify-center gap-y-4 text-primary">
+                                <div class="rounded-full border-2 border-primary p-2">
+                                    <div class="i-lucide-chevron-left size-8"></div>
+                                </div>
+                                <div class="text-lg font-medium">مشاهده بیشتر</div>
+                            </div>
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="swiper-button-next main-slider-nav-button"></div>
+                <div class="swiper-button-prev main-slider-nav-button"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Special Sale Section -->
+    <section class="container py-5">
+        <div class="mb-6 flex items-center justify-between gap-x-6 text-nowrap">
+            <h2 class="font-semiBold lg:text-xl">تخفیفات ویژه</h2>
+            <div class="h-0.25 w-full bg-secondary"></div>
+        </div>
+
+        <div
+            class="grid grid-cols-2 gap-px gap-y-2 xs:gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            {% for product in products %}
+            <div
+                class="border-gradient relative rounded-[--product-card-radius] p-px [--product-card-radius:theme(borderRadius.2xl)] before:absolute before:-inset-px before:h-[calc(100%+2px)] before:w-[calc(100%+2px)] before:rounded-[--product-card-radius] before:content-['']">
+                <a href="{% url 'product_detail_page' product.slug %}"
+                    class="relative block overflow-hidden rounded-[calc(var(--product-card-radius)-1px)] bg-muted">
+                    <div class="mb-4 bg-secondary p-2 lg:p-4">
+                        <!-- Special Sale Percentage  -->
+                        <div
+                            class="absolute right-2 top-0 rounded-b-full bg-warning px-1 py-1.5 text-center text-sm font-medium text-white md:text-base">
+                            Off
+                        </div>
+                        <!-- Image -->
+                        <img src="{{product.image.url}}" alt="{{product.name}}"
+                            class="aspect-[1/1] w-full rounded-xl object-cover" />
+                    </div>
+                    <div class="mb-1 px-2 lg:px-4">
+                        <p class="line-clamp-2 h-10 text-sm xs:h-12 xs:text-base">
+                            {{product.name}}
+                        </p>
+
+                        <div class="gap-x-1 text-end font-bold text-primary">
+                            <div class="h-5 text-end text-sm text-text/50 xs:text-base">
+                                <del>{{product.price}}</del>
+                            </div>
+
+                            <span class="text-sm xs:text-base">{{product.sale_price|intcomma}}</span>
+                            <span class="text-sm font-light">تومان</span>
+                        </div>
+                    </div>
+                    <div class="h-8 px-2 lg:px-4">
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Pagination -->
+    <nav class="!mt-10">
+        <div class="flex items-center justify-center gap-1">
+            <!-- Previous  -->
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}"
+                class="inline-flex h-10 w-10 items-center justify-center whitespace-nowrap rounded-md border bg-muted p-0 text-sm font-medium ring-offset-background transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                aria-label="Previous Page" type="button">
+                <i class="i-lucide-chevron-right"></i>
+                <a href="?page=1"
+                    class="inline-flex h-10 w-10 items-center justify-center whitespace-nowrap rounded-md border bg-muted p-0 text-sm font-medium ring-offset-background transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                    data-type="page" aria-label="Page 1" type="button" value="1">
+                    1
+                </a>
+            </a>
+            {% endif %}
+            <!-- Current  -->
+            <a href="?page={{page_obj.number}}"
+                class="inline-flex h-10 w-10 items-center justify-center whitespace-nowrap rounded-md border border-primary-btn bg-primary-btn p-0 text-sm font-medium text-white ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                data-type="page" aria-label="Page 2" type="button" value="2">
+                {{ page_obj.number }}
+            </a>
+            <!-- Next  -->
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.paginator.num_pages }}"
+                class="inline-flex h-10 w-10 items-center justify-center whitespace-nowrap rounded-md border bg-muted p-0 text-sm font-medium ring-offset-background transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                data-type="page" aria-label="Page 10" type="button" value="10">
+                {{ page_obj.paginator.num_pages }}
+            </a>
+            <a href="?page={{ page_obj.next_page_number }}"
+                class="inline-flex h-10 w-10 items-center justify-center whitespace-nowrap rounded-md border bg-muted p-0 text-sm font-medium ring-offset-background transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                aria-label="Next Page" type="button">
+                <i class="i-lucide-chevron-left"></i>
+            </a>
+            {% endif %}
+        </div>
+    </nav>
+    {% else %}
+        <div class="flex flex-col gap-y-4 items-center justify-center text-text">
+            <div class="i-ic-outline-search-off size-24"></div>
+            <div class="text-2xl"> محصولی یافت نشد!</div>
+        </div>
+    {% endif %}
+</main>
+{% endblock%}

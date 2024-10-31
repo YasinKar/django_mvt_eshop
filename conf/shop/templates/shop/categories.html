@@ -1,0 +1,75 @@
+{% extends 'shared/base.html' %}
+{% block page_title %}دسته بندی ها{% endblock %}
+{% block meta_description %}دسته بندی محصولات-{{site_setting.site_name}}{% endblock %}
+
+{% block content%}
+<main class="flex-grow bg-background pt-[106px]">
+    <div class="min-h-screen bg-muted pb-24 lg:pb-14">
+        <div class="container pt-10">
+            <!-- Categories -->
+            <div class="mb-16">
+                <!-- Title -->
+                <div class="mb-10 flex flex-col items-center gap-6">
+                    <div class="flex size-12 items-center justify-center rounded-full bg-primary/15 p-2 text-primary">
+                        <i class="i-iconamoon-category-light size-8"></i>
+                    </div>
+                    <p class="text-lg font-medium">دسته بندی ها</p>
+                </div>
+                <!-- Items -->
+                <ul class="space-y-2">
+                    {% for category in categories %}
+                    {% if not category.parent %}
+                    <li class="relative rounded-lg border-b bg-muted" data-accordion-item>
+                        <button type="button" class="w-full px-4 py-3 text-right md:px-6 md:py-5" data-accordion-button>
+                            <div class="flex items-center justify-between gap-2 md:text-base">
+                                <span>{{ category.name }}</span>
+                                <div class="min-w-fit">
+                                    <span class="i-lucide-chevron-left duration-300" data-accordion-chevron></span>
+                                </div>
+                            </div>
+                        </button>
+                
+                        <div class="relative max-h-0 overflow-hidden transition-all duration-300" data-accordion-content>
+                            <ul class="space-y-4 py-4">
+                                {% for child in category.children.all %}
+                                <li>
+                                    <a href="{% url 'filter_products_page' %}?category={{child.id}}"
+                                        class="flex items-center justify-between gap-1 py-2 pl-4 pr-6 text-primary">
+                                        {{ child.name }}
+                                        <div class="min-w-fit">
+                                            <div class="i-mynaui-external-link size-5"></div>
+                                        </div>
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>                
+            </div>
+            <!-- Brands -->
+            <div class="mb-16">
+                <!-- Title -->
+                <div class="mb-10 flex flex-col items-center gap-6">
+                    <div class="flex size-12 items-center justify-center rounded-full bg-primary/15 p-2 text-primary">
+                        <i class="i-ph-bookmark size-8"></i>
+                    </div>
+                    <p class="text-lg font-medium">برند ها</p>
+                </div>
+                <!-- Items -->
+                <div class="grid grid-cols-2 gap-4 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5">
+                    {% for brand in brands %}
+                    <a href="{% url 'filter_products_page' %}?brand={{brand.id}}"
+                        class="flex flex-col items-center justify-center gap-6 rounded-lg border bg-background px-4 py-6">
+                        <img src="{{brand.logo.url}}" alt="{{brand.name}}" class="rounded-lg" />
+                        <p class="text-sm font-medium text-text/80">{{brand.name}}</p>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock%}

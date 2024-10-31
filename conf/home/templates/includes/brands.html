@@ -1,0 +1,22 @@
+<!-- Brands -->
+<section class="container py-10">
+    <div class="mb-8 text-center text-sm font-semibold lg:text-lg">
+        برند ها
+    </div>
+    <div class="swiper brand-slider">
+        <div class="swiper-wrapper">
+            {% for brand in brands %}
+            <div class="swiper-slide">
+                <div>
+                    <a href="{% url 'filter_products_page' %}?brand={{brand.id}}" class="flex flex-col items-center justify-center rounded-lg bg-muted px-5 py-5">
+                        <img src="{{brand.logo.url}}" class="mb-4 h-[50px] rounded-lg" alt="{{brand.name}}" />
+                        <div class="line-clamp-1 h-5 text-center">{{brand.name}}</div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="swiper-button-next main-slider-nav-button"></div>
+        <div class="swiper-button-prev main-slider-nav-button"></div>
+    </div>
+</section>

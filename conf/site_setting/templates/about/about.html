@@ -1,0 +1,25 @@
+{% extends 'shared/base.html' %}
+{% block page_title %}درباره ما{% endblock %}
+{% block meta_description %}فروشگاه {{site_setting.site_name}} | صفحه درباره ما{% endblock %}
+
+{% block content%}
+<main class="flex-grow bg-background pt-[106px]">
+    <div class="container pt-10">
+        <div class="rounded-lg bg-muted p-5">
+            <!-- Head -->
+            <div class="mb-5 flex">
+                <h1 class="relative select-none pb-2 text-lg text-text md:text-xl">
+                    درباره ما
+                    <span class="absolute bottom-0 right-0 h-0.5 w-full rounded-full bg-primary"></span>
+                </h1>
+            </div>
+            <!-- Content -->
+            <div class="space-y-4">
+                <p class="text-text-/70 leading-loose">
+                    {{site_setting.site_about}}
+                </p>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

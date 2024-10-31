@@ -1,0 +1,166 @@
+{% extends 'shared/base.html' %}
+{% load render_partial %}
+{% block page_title %}داشبورد{% endblock %}
+{% block meta_description %}پنل کاربری-{{site_setting.site_name}}{% endblock %}
+
+{% block content %}
+<main class="flex-grow bg-background pt-[106px]">
+    <div class="container grid grid-cols-12 gap-4 pb-28 pt-10 lg:pb-10">
+        <!-- Sidebar -->
+        {% render_partial 'dashboard.views.DashboardSidebarPartialView' %}
+        <!-- Content -->
+        <div class="col-span-12 lg:col-span-9">
+            <div class="rounded-lg bg-muted shadow">
+                <div class="p-5">
+                    <h1 class="relative mb-16 w-fit font-medium lg:text-lg">
+                        پیشخوان
+                        <span
+                            class="absolute right-0 top-10 h-[3px] w-full animate-fill-border rounded-full bg-primary"></span>
+                    </h1>
+                    <div class="mb-8">
+                        <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
+                            <h3 class="flex items-center gap-x-4 text-lg text-text/80">
+                                <span class="h-2 w-2 rounded-full bg-primary"></span>
+                                حساب کاربری
+                            </h3>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 md:gap-6 xl:grid-cols-3">
+                            <a href="{% url 'dashboard_edit_page' %}"
+                                class="col-span-2 flex flex-col items-center justify-center gap-4 rounded-lg border px-4 py-3 hover:border-border/50 md:flex-row md:justify-start xl:col-span-1">
+                                <div
+                                    class="flex size-12 items-center justify-center rounded-full bg-primary-btn text-white">
+                                    <div class="i-lucide-user-cog size-8"></div>
+                                </div>
+                                <div class="flex flex-col items-center md:items-start">
+                                    <p class="font-medium">اطلاعات کاربری</p>
+                                </div>
+                            </a>
+                            <a href="{% url 'dashboard_messages_page' %}"
+                                class="flex flex-col items-center justify-center gap-4 rounded-lg border px-4 py-3 hover:border-border/50 md:flex-row md:justify-start">
+                                <div
+                                    class="flex size-12 items-center justify-center rounded-full bg-emerald-500 text-white dark:bg-emerald-600">
+                                    <div class="i-lucide-bell size-8"></div>
+                                </div>
+                                <div class="flex flex-col items-center md:items-start">
+                                    <p class="font-medium">{{messages.count}} اعلان جدید</p>
+                                </div>
+                            </a>
+                            <a href="{% url 'dashboard_orders_page' %}"
+                                class="flex flex-col items-center justify-center gap-4 rounded-lg border px-4 py-3 hover:border-border/50 md:flex-row md:justify-start">
+                                <div
+                                    class="flex size-12 items-center justify-center rounded-full bg-red-500 text-white dark:bg-yellow-600">
+                                    <div class="i-lucide-shopping-cart size-8"></div> <!-- تغییر ایکون به سبد خرید -->
+                                </div>
+                                <div class="flex flex-col items-center md:items-start">
+                                    <p class="font-medium">سفارشات</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mb-8">
+                        <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
+                            <h3 class="flex items-center gap-x-4 text-lg text-text/80">
+                                <span class="h-2 w-2 rounded-full bg-primary"></span>
+                                سفارشات فعلی
+                            </h3>
+                        </div>
+                        {% if carts.exists %}
+                        <div class="space-y-4">
+                            {% for cart in carts %}
+                            <a href="./profile-order-detail.html" class="block rounded-lg border p-4 shadow">
+                                <div class="flex items-center justify-between pb-6">
+                                    <div class="flex items-center gap-x-2 text-success">
+                                        <div class="i-lucide-circle-check size-6"></div>
+                                        <p class="font-medium md:text-lg">پرداخت شده</p>
+                                    </div>
+                                    <div class="i-lucide-chevron-left size-6"></div>
+                                </div>
+                                <div class="flex flex-col gap-6 xl:flex-row xl:justify-between xl:gap-16">
+                                    <div class="flex flex-col gap-4 md:flex-row">
+                                        <div class="flex items-center justify-between gap-x-2 md:justify-start">
+                                            <div class="text-sm text-text/60 md:text-base">
+                                                شماره سفارش
+                                            </div>
+                                            <div class="text-sm text-text/95 md:text-base">
+                                                {{cart.id}}
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between gap-x-2 md:justify-start">
+                                            <div class="text-sm text-text/60 md:text-base">
+                                                مبلغ کل
+                                            </div>
+                                            <div class="flex items-center gap-1 text-primary">
+                                                <div class="font-bold md:text-lg">
+                                                    {{cart.paid}}
+                                                </div>
+                                                <div class="text-sm md:text-base">تومان</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between gap-x-2 md:justify-start">
+                                            <div class="text-sm text-text/60 md:text-base">
+                                                تاریخ
+                                            </div>
+                                            <div class="flex items-center gap-1 text-text/95">
+                                                {{cart.paid_date}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% if cart.status == 'در حال پردازش' %}
+                                    <div class="flex flex-grow flex-col gap-y-4">
+                                        <div class="flex items-center gap-x-2 text-sky-500 dark:text-sky-400">
+                                            <div class="i-clarity-process-on-vm-line size-5"></div>
+
+                                            <p class="text-sm font-medium md:text-base">
+                                                درحال پردازش
+                                            </p>
+                                        </div>
+                                        <div class="relative h-2 w-full rounded-full bg-secondary">
+                                            <span
+                                                class="absolute inset-y-0 right-0 rounded-full bg-sky-500 dark:bg-sky-400"
+                                                style="width: 50%"></span>
+                                        </div>
+                                    </div>
+                                    {% elif cart.status == 'در حال تحویل' %}
+                                    <div class="flex flex-grow flex-col gap-y-4">
+                                        <div class="flex items-center gap-x-2 text-teal-500 dark:text-teal-400">
+                                            <div class="i-carbon-delivery size-5"></div>
+
+                                            <p class="text-sm font-medium md:text-base">
+                                                در حال تحویل
+                                            </p>
+                                        </div>
+                                        <div class="relative h-2 w-full rounded-full bg-secondary">
+                                            <span
+                                                class="absolute inset-y-0 right-0 rounded-full bg-teal-500 dark:bg-teal-400"
+                                                style="width: 75%"></span>
+                                        </div>
+                                    </div>
+                                    {% elif cart.status == 'تحویل داده شده' %}
+                                    <div class="flex flex-grow flex-col gap-y-4">
+                                        <div class="flex items-center gap-x-2 text-success">
+                                            <div class="i-icon-park-outline-delivery size-5"></div>
+
+                                            <p class="text-sm font-medium md:text-base">
+                                                تحویل داده شده
+                                            </p>
+                                        </div>
+                                        <div class="relative h-2 w-full rounded-full bg-secondary">
+                                            <span class="absolute inset-y-0 right-0 rounded-full bg-success"
+                                                style="width: 100%"></span>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </a>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <h2>شما هیج سفارشی در حال حاضر ندارید</h2>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

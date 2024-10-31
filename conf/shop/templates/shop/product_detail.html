@@ -1,0 +1,487 @@
+{% extends 'shared/base.html' %}
+{% load humanize %}
+{% block page_title %}{{product.name}}{% endblock %}
+{% block meta_description %}فروشگاه {{site_setting.site_name}} | محصول {{product.id}} {{product.name}}{% endblock %}
+
+{% block content%}
+<main class="flex-grow bg-background pt-[106px]">
+    <div class="container pt-10">
+        <!-- Detail -->
+        <div class="mb-16 grid grid-cols-12 gap-4">
+            <div class="col-span-12 flex-grow rounded-lg bg-muted px-4 py-6 shadow-md lg:col-span-9">
+                <div class="mb-6 grid grid-cols-12 gap-6">
+                    <div class="col-span-12 space-y-4 lg:col-span-4 lg:min-w-fit">
+                        <div>
+                            <!-- Desktop Gallery -->
+                            <div class="hidden space-y-4 lg:block">
+                                <!-- Main image -->
+                                <button type="button" data-modal-target="gallery-modal"
+                                    data-modal-toggle="gallery-modal">
+                                    <img src="{{product.image.url}}" alt="{{product.name}}" loading="lazy"
+                                        class="mx-auto h-full w-full cursor-pointer rounded-xl" />
+                                </button>
+                                <!-- Gallery -->
+                                <div class="flex w-full items-center justify-center gap-2">
+                                    {% for image in product.images.all %}
+                                    <button type="button" data-modal-target="gallery-modal"
+                                        data-modal-toggle="gallery-modal"
+                                        class="relative cursor-pointer overflow-hidden rounded-xl border">
+                                        <img src="{{image.image.url}}" alt="Product Image {{image.id}}" loading="lazy"
+                                            class="h-16 w-16" />
+                                    </button>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <!-- Mobile Gallery -->
+                            <div class="lg:hidden">
+                                <div class="mb-4">
+                                    <div class="swiper product-gallery-mobile-swiper">
+                                        <div class="swiper-wrapper">
+                                            <div class="swiper-slide">
+                                                <img src="{{product.image.url}}" alt="Product Image {{product.id}}"
+                                                    class="mx-auto h-[250px] rounded-lg object-cover" />
+                                            </div>
+                                            {% for image in product.images.all %}
+                                            <div class="swiper-slide">
+                                                <img src="{{image.image.url}}" alt="Product Image {{image.id}}"
+                                                    class="mx-auto h-[250px] rounded-lg object-cover" />
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="swiper-pagination text-left"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Mobile Actions ( Favorite, Share )-->
+                        <div class="flex items-center justify-end gap-2 text-text/95 lg:hidden">
+                            <a href="{% url 'add_to_favorites_page' %}?product_id={{product.id}}"
+                                class="icon-btn h-10 w-10" title="Product add to Favorite">
+                                <div class="i-lucide-heart size-6"></div>
+                            </a>
+
+                            <button class="icon-btn h-10 w-10" data-state="closed" type="button"
+                                data-modal-target="share-modal" data-modal-toggle="share-modal">
+                                <div class="i-lucide-share-2 size-6"></div>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-span-12 flex min-h-full flex-col lg:col-span-8">
+                        <div class="flex gap-4">
+                            <div class="flex-grow">
+                                <h1 class="mb-4 text-lg font-semibold">
+                                    {{product.name}}
+                                </h1>
+                                <div class="mb-4 flex items-center gap-4 border-b pb-6 text-sm font-light">
+                                    <div class="text-text/95">کد کالا {{product.id}}</div>
+                                    <span class="h-4 w-px rounded-full bg-secondary"></span>
+                                    <div class="cursor-pointer text-primary">0 دیدگاه</div>
+
+                                </div>
+                            </div>
+                            <!-- Desktop Actions ( Favorite, Share )-->
+
+                            <div class="hidden flex-col items-center gap-2 text-text/95 lg:flex">
+                                <div>
+                                    <a href="{% url 'add_to_favorites_page' %}?product_id={{product.id}}"
+                                        data-popover-target="popover-favorite" data-popover-placement="right"
+                                        type="button" class="icon-btn h-10 w-10" title="Product add to Favorite">
+                                        <div class="i-lucide-heart size-6"></div>
+                                    </a>
+
+                                    <div data-popover id="popover-favorite" role="tooltip"
+                                        class="invisible absolute z-10 inline-block rounded-lg border bg-background px-2 py-1 text-sm opacity-0 shadow-sm transition-opacity duration-300">
+                                        <div class="px-3 py-2">
+                                            <p>افزودن به لیست علاقه‌مندی ها</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <button data-popover-target="popover-share" data-popover-placement="right"
+                                        type="button" data-modal-target="share-modal" data-modal-toggle="share-modal"
+                                        class="icon-btn h-10 w-10" title="Product add to Favorite">
+                                        <div class="i-lucide-share-2 size-6"></div>
+                                    </button>
+
+                                    <div data-popover id="popover-share" role="tooltip"
+                                        class="invisible absolute z-10 inline-block rounded-lg border bg-background px-2 py-1 text-sm opacity-0 shadow-sm transition-opacity duration-300">
+                                        <div class="px-3 py-2">
+                                            <p>اشتراک گذاری</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-grow flex-col">
+                            <div class="mb-8 space-y-4">
+                                {% if product.colors.exists %}
+                                <div>
+                                    <div class="mb-4">انتخاب رنگ</div>
+                                    <fieldset class="flex flex-wrap items-center gap-3">
+                                        <legend class="sr-only">رنگ</legend>
+                                        {% for color in product.colors.all %}
+                                        <div>
+                                            <div>
+                                                <label for="{{color.id}}" class="relative block h-8 w-8"
+                                                    data-state="closed"><input id="{{color.id}}" type="radio"
+                                                        name="color" class="peer sr-only" {% if forloop.first %}checked{% endif %} 
+                                                        value="{{color.id}}" /><span
+                                                        class="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full border shadow ring-primary ring-offset-2 duration-150 peer-checked:border-none peer-checked:ring"
+                                                        style="background-color: {{color.color_code}}"></span>
+
+                                                    <div
+                                                        class="i-lucide-check pointer-events-none absolute inset-0 z-0 m-auto hidden h-5 w-5 text-black duration-150 peer-checked:block">
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </fieldset>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Properties -->
+                            <div>
+                                <p class="mb-2 font-medium">درباره محصول</p>
+                                <p class="font-light text-sm">{{product.description}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden gap-2 md:grid md:grid-cols-2 xl:grid-cols-4">
+                    <div class="flex w-full items-center gap-2 rounded-lg border px-2 py-4 text-sm text-text/60">
+                        <div class="i-lucide-timer-reset size-6"></div>
+                        هفت روز ضمانت بازگشت کالا
+                    </div>
+                    <div class="flex w-full items-center gap-2 rounded-lg border px-2 py-4 text-sm text-text/60">
+                        <div class="i-lucide-badge-check size-6"></div>
+
+                        تضمین اصالت کالا
+                    </div>
+                    <div class="flex w-full items-center gap-2 rounded-lg border px-2 py-4 text-sm text-text/60">
+                        <div class="i-lucide-headset size-6"></div>
+
+                        هفت روز هفته
+                    </div>
+                    <div class="flex w-full items-center gap-2 rounded-lg border px-2 py-4 text-sm text-text/60">
+                        <div class="i-lucide-earth size-6"></div>
+
+                        ارسال به سراسر ایران
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desktop Add to Cart -->
+            <div class="sticky top-36 col-span-3 hidden h-fit rounded-lg bg-muted px-4 py-6 shadow-md lg:block">
+                <div class="mb-6 flex justify-between">
+                    <div>
+                        {% if product.is_sale %}
+                        <div class="flex flex-col gap-1">
+                            <div class="w-9 rounded-full bg-warning text-center text-sm text-white">
+                                Off
+                            </div>
+                            <del class="text-sm text-text/60 xl:text-base">{{product.price|intcomma}}
+                            </del>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="flex items-center gap-x-1">
+                        {% if product.is_sale %}
+                        <span class="font-bold xl:text-xl">{{product.sale_price|intcomma}}</span><span
+                            class="text-xs text-text/60">تومان</span>
+                        {% else %}
+                        <span class="font-bold xl:text-xl">{{product.price|intcomma}}</span><span
+                            class="text-xs text-text/60">تومان</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <div>
+                            <a id="add-to-cart-btn" class="btn-primary inline-block w-full py-2.5"
+                                aria-label="Add to Cart" href="{% url 'add_order_page' %}?slug={{product.slug}}{% if product.color.exists %}&color_id={{product.color.all.0.id}}{% endif %}">
+                                افزودن به سبد خرید
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Add to Cart -->
+            <div data-onscrollclass="translate-y-1/2"
+                class="fixed inset-x-0 bottom-0 z-20 rounded-t-xl bg-muted px-4 pb-20 pt-4 transition-all duration-300 lg:hidden">
+                <div>
+                    {% if product.is_sale %}
+                    <a id="add-to-cart-btn" type="button" href="{% url 'add_order_page' %}?slug={{product.slug}}{% if product.color.exists %}&color_id={{product.color.all.0.id}}{% endif %}"
+                        class="inline-block btn-primary w-full py-2" aria-label="Add to Cart">
+                        افزودن | {{product.sale_price|intcomma}} <span class="text-xs"> تومان </span>
+                    </a>
+                    {% else %}
+                    <a id="add-to-cart-btn" type="button" href="{% url 'add_order_page' %}?slug={{product.slug}}{% if product.color.exists %}&color_id={{product.color.all.0.id}}{% endif %}"
+                        class="inline-block btn-primary w-full py-2" aria-label="Add to Cart">
+                        افزودن | {{product.price|intcomma}} <span class="text-xs"> تومان </span>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Products -->
+        {% if related_products.exists %}
+        <div class="mb-16">
+            <div class="mb-6 flex items-center justify-between gap-x-6 text-nowrap">
+                <h2 class="font-semiBold lg:text-xl">کالا های مرتبط</h2>
+                <div class="h-0.25 w-full bg-secondary"></div>
+            </div>
+
+            <div>
+                <div class="swiper product-slider !px-px pt-4">
+                    <div class="swiper-wrapper py-px">
+                        <!-- product -->
+                        {% for related_product in related_products %}
+                        <div class="swiper-slide">
+                            <div
+                                class="border-gradient relative rounded-[--product-card-radius] p-px [--product-card-radius:theme(borderRadius.2xl)] before:absolute before:-inset-px before:h-[calc(100%+2px)] before:w-[calc(100%+2px)] before:rounded-[--product-card-radius] before:content-['']">
+                                <a href="{% url 'product_detail_page' related_product.slug %}"
+                                    class="relative block overflow-hidden rounded-[calc(var(--product-card-radius)-1px)] bg-muted">
+                                    <div class="mb-4 bg-secondary p-2 lg:p-4">
+                                        <!-- Special Sale Percentage  -->
+                                        {% if related_product.is_sale %}
+                                        <div
+                                            class="absolute right-2 top-0 rounded-b-full bg-warning px-1 py-1.5 text-center text-sm font-medium text-white md:text-base">
+                                            Off
+                                        </div>
+                                        {% endif %}
+                                        <!-- Image -->
+                                        <img src="{{related_product.image.url}}" alt="{{related_product.name}}"
+                                            class="aspect-[1/1] w-full rounded-xl object-cover" />
+                                    </div>
+                                    <div class="mb-1 px-2 lg:px-4">
+                                        <p class="line-clamp-2 h-10 text-sm xs:h-12 xs:text-base">
+                                            {{related_product.name}}
+                                        </p>
+
+                                        <div class="gap-x-1 text-end font-bold text-primary">
+                                            {% if related_product.is_sale %}
+                                            <div class="h-5 text-end text-sm text-text/50 xs:text-base">
+                                                <del>{{related_product.price|intcomma}}</del>
+                                            </div>
+
+                                            <span class="text-sm xs:text-base">{{related_product.sale_price|intcomma}}</span>
+                                            <span class="text-sm font-light">تومان</span>
+                                            {% else %}
+                                            <span class="text-sm xs:text-base">{{related_product.price|intcomma}}</span>
+                                            <span class="text-sm font-light">تومان</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="h-8 px-2 lg:px-4"></div>
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Information -->
+        <div class="rounded-lg bg-muted px-4 py-6 shadow-md">
+            <!-- Tabs -->
+            <ul
+                class="mb-6 flex justify-between gap-x-2 border-b text-center text-sm font-medium xs:justify-start xs:gap-x-4 xs:text-base">
+                <li>
+                    <div data-scroll-to="description"
+                        class="inline-block cursor-pointer rounded-t-lg border-b-2 border-transparent px-2 pb-2 duration-200 hover:text-primary">
+                        معرفی
+                    </div>
+                </li>
+                <li>
+                    <div data-scroll-to="specs"
+                        class="inline-block cursor-pointer rounded-t-lg border-b-2 border-transparent px-2 pb-2 duration-200 hover:text-primary">
+                        مشخصات
+                    </div>
+                </li>
+                <li>
+                    <div data-scroll-to="comment"
+                        class="inline-block cursor-pointer rounded-t-lg border-b-2 border-transparent px-2 pb-2 duration-200 hover:text-primary">
+                        دیدگاه ها
+                    </div>
+                </li>
+            </ul>
+            <div class="divide-y divide-border">
+                <!-- description -->
+                <div class="py-6">
+                    <div id="description" class="-translate-y-36"></div>
+                    <div class="relative mb-10 w-fit text-2xl font-medium">
+                        معرفی
+                        <span class="absolute right-0 top-10 h-[3px] w-full rounded-full bg-primary"></span>
+                    </div>
+                    <div data-show-more>
+                        <div data-show-max="450" class="max-w-full overflow-hidden">
+                            <article
+                                class="prose !max-w-full dark:prose-invert [&_a]:text-primary [&_a]:no-underline [&_img]:mx-auto [&_img]:rounded-xl [&_ul]:list-inside">
+                                <p>{{product.description}}</p>
+                                <h4>تگ های محصول</h4>
+                                <ul>
+                                    {% for tag in product.tags.all %}
+                                    <li>{{tag}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+                <!-- Specs -->
+                {% if product.informations.exists %}
+                <div class="py-6">
+                    <div id="specs" class="-translate-y-60"></div>
+                    <div class="relative mb-10 w-fit text-2xl font-medium">
+                        مشخصات
+                        <span class="absolute right-0 top-10 h-[3px] w-full rounded-full bg-primary"></span>
+                    </div>
+
+                    <div data-show-more>
+                        <div data-show-max="450" class="prose mb-4 max-w-full overflow-hidden dark:prose-invert">
+                            <ul class="w-full space-y-6 text-sm">
+                                {% for information in product.informations.all %}
+                                <li class="grid grid-cols-3 gap-x-2 lg:grid-cols-5">
+                                    <div class="col-span-1 text-text/60">{{information.key}}</div>
+                                    <div class="col-span-2 border-b pb-4 text-text/95 lg:col-span-4">
+                                        <ul class="space-y-4">
+                                            <li>{{information.value}}</li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <!-- Comments -->
+                {% include 'includes/comments.html' %}
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Modals -->
+<!-- Share Modal -->
+<div id="share-modal" tabindex="-1" aria-hidden="true"
+    class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full overflow-y-auto overflow-x-hidden p-4 md:inset-0">
+    <div class="relative max-h-full w-full max-w-sm">
+        <div class="overflow-hidden rounded-lg border bg-muted shadow">
+            <!-- Header -->
+            <div class="px-4 py-5 sm:px-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="md:text-lg">اشتراک گذاری</h3>
+
+                    <button class="text-text/60 duration-300 hover:text-text/95" data-modal-hide="share-modal"
+                        type="button">
+                        <div class="i-lucide-x size-6"></div>
+
+                        <span class="sr-only">Close menu</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="space-y-6 px-4 py-5 sm:p-6">
+                <!-- Content -->
+                <div class="flex items-center gap-4">
+                    <button class="text-primary" id="copyButton">
+                        <div class="i-lucide-copy size-6"></div>
+                        <div class="i-lucide-check hidden size-6"></div>
+                    </button>
+                    <div class="w-full">
+                        <div class="line-clamp-1 w-full select-none rounded-lg border px-4 py-3">
+                            <input id="urlInput" class="w-full bg-transparent text-left outline-none" readonly=""
+                                type="text" />
+                        </div>
+                    </div>
+                </div>
+                <!-- Footer -->
+                <div class="flex justify-end">
+                    <button data-modal-hide="share-modal" type="button"
+                        class="btn-warning w-full rounded-lg px-4 py-2 md:w-auto">
+                        <span> بستن </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gallery Modal -->
+<div id="gallery-modal" tabindex="-1" aria-hidden="true"
+    class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full overflow-y-auto overflow-x-hidden p-4 md:inset-0">
+    <div class="relative max-h-full w-full max-w-5xl">
+        <div class="overflow-hidden rounded-lg border bg-muted shadow">
+            <!-- Header -->
+            <div class="px-4 py-5 sm:px-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="md:text-lg">
+                        {{product.name}}
+                    </h3>
+
+                    <button class="text-text/60 duration-300 hover:text-text/95" data-modal-hide="gallery-modal"
+                        type="button">
+                        <div class="i-lucide-x size-6"></div>
+
+                        <span class="sr-only">Close menu</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="space-y-6 px-4 py-5 sm:p-6">
+                <!-- Content -->
+                <div class="flex flex-col gap-4">
+                    <div>
+                        <div class="swiper product-gallery-swiper">
+                            <div class="swiper-wrapper">
+                                {% for image in product.images.all %}
+                                <div class="swiper-slide">
+                                    <img src="{{ image.image.url }}" alt="Product Image {{image.id}}"
+                                        class="mx-auto min-h-[500px] min-w-[500px]" loading="lazy" />
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <div class="swiper-pagination"></div>
+                            <div class="swiper-button-next main-slider-nav-button"></div>
+                            <div class="swiper-button-prev main-slider-nav-button"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //Color
+    const colorInputs = document.querySelectorAll('input[name="color"]');
+    const addToCartBtns = document.querySelectorAll('#add-to-cart-btn');
+
+    colorInputs.forEach(input => {
+        input.addEventListener('change', function () {
+            const selectedColor = document.querySelector('input[name="color"]:checked').value;
+
+            addToCartBtns.forEach(btn => {
+                const currentAddUrl = new URL(btn.href);
+                currentAddUrl.searchParams.set('color_id', selectedColor);
+                btn.href = currentAddUrl.toString();
+            });
+        });
+    });
+
+    //Share
+    const currentUrl = window.location.href;
+    document.getElementById('urlInput').value = currentUrl;
+
+    let copyButton = document.querySelector('#copyButton');
+
+    copyButton.setAttribute('data-copy-clipboard', currentUrl);
+</script>
+{% endblock%}

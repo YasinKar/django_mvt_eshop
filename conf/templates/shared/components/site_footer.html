@@ -1,0 +1,162 @@
+<footer class="mt-14 border-t bg-muted py-10">
+    <div class="container">
+        <!-- Top Section -->
+        <div class="mb-8 grid grid-cols-12 gap-4 border-b pb-10">
+            <!-- Right Section -->
+            <div class="col-span-12 lg:col-span-8">
+                <div class="grid grid-cols-2 justify-items-center gap-y-6 lg:grid-cols-4 lg:justify-items-start">
+                    <div class="flex flex-col gap-4 text-center lg:text-right">
+                        <div class="select-none font-medium">{{site_setting.site_name}}</div>
+                        <ul class="space-y-px">
+                            <li>
+                                <a href="{% url 'about_page' %}"
+                                    class="block py-2 text-sm text-text/60 duration-200 hover:text-primary">درباره ما
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'contact_us_page' %}"
+                                    class="block py-2 text-sm text-text/60 duration-200 hover:text-primary">
+                                    تماس با ما
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'rules_page' %}"
+                                    class="block py-2 text-sm text-text/60 duration-200 hover:text-primary">قوانین و
+                                    مقررات</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'dashboard_page' %}"
+                                    class="block py-2 text-sm text-text/60 duration-200 hover:text-primary">حساب
+                                    کاربری</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="flex flex-col gap-4 text-center lg:text-right">
+                        <div class="select-none font-medium">فروشگاه</div>
+                        <ul class="space-y-px">
+                            <li>
+                                <a href="{% url 'home_page' %}"
+                                    class="block py-2 text-sm text-text/60 duration-200 hover:text-primary">
+                                    خانه
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'special_sale_page' %}"
+                                    class="block py-2 text-sm text-text/60 duration-200 hover:text-primary">
+                                    فروش ویژه
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'categories_page' %}"
+                                    class="block py-2 text-sm text-text/60 duration-200 hover:text-primary">
+                                    دسته بندی ها
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'categories_page' %}"
+                                    class="block py-2 text-sm text-text/60 duration-200 hover:text-primary">
+                                    برند ها
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="flex flex-col gap-4 text-center lg:text-right">
+                        <div class="select-none font-medium">حساب کاربری</div>
+                        <ul class="space-y-px">
+                            <li>
+                                <a href="{% url 'dashboard_edit_page' %}"
+                                    class="block py-2 text-sm text-text/60 duration-200 hover:text-primary">
+                                    اطلاعات حساب کاربری
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'dashboard_orders_page' %}"
+                                    class="block py-2 text-sm text-text/60 duration-200 hover:text-primary">
+                                    سفارشات
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'dashboard_favorites_page' %}"
+                                    class="block py-2 text-sm text-text/60 duration-200 hover:text-primary">
+                                    لیست علاقه مندی ها
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'dashboard_messages_page' %}"
+                                    class="block py-2 text-sm text-text/60 duration-200 hover:text-primary">
+                                    پیام ها
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="flex flex-col gap-4 text-center lg:text-right">
+                        <div class="select-none font-medium">سفارشات</div>
+                        <ul class="space-y-px">
+                            <li>
+                                <a href="{% url 'cart_page' %}"
+                                    class="block py-2 text-sm text-text/60 duration-200 hover:text-primary">
+                                    سبد خرید
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'cart_shipping_page' %}"
+                                    class="block py-2 text-sm text-text/60 duration-200 hover:text-primary">
+                                    ثبت سفارش
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'cart_payment_page' %}"
+                                    class="block py-2 text-sm text-text/60 duration-200 hover:text-primary">
+                                    پرداخت
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'dashboard_addresses_page' %}"
+                                    class="block py-2 text-sm text-text/60 duration-200 hover:text-primary">
+                                    ادرس ها
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Left Section -->
+            <div class="col-span-12 lg:col-span-4">
+                <div class="flex h-full items-center justify-center gap-4 lg:justify-end">
+                    {% for symbol in symbols %}
+                    <div class="relative">
+                        <a href="{{symbol.url}}" target="_blank" >
+                            <img src="{{symbol.image.url}}" class="h-28 w-28 object-cover"
+                                alt="Samandehi Logo" />
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <!-- Bottom Section -->
+        <div class="flex flex-col items-center justify-between gap-y-10 md:flex-row">
+            <div class="flex flex-col justify-items-center gap-4 text-center">
+                <p>{{site_setting.copyright}}</p>
+            </div>
+
+            <div class="flex flex-col items-center justify-center gap-4 text-center lg:text-right">
+                <p>{{site_setting.site_name}} در شبکه های اجتماعی</p>
+                <div class="text-text-/70 flex items-center justify-center gap-x-6 text-center">
+                    <a href="{{site_setting.instagram}}" class="duration-150 hover:text-warning">
+                        <i class="i-carbon-logo-instagram h-7 w-7"></i>
+                    </a>
+                    <a href="{{site_setting.telegram}}" class="duration-150 hover:text-primary">
+                        <i class="i-file-icons-telegram h-5 w-5"></i>
+                    </a>
+                </div>
+            </div>
+
+            <button id="scrollToTopButton"
+                class="order-first flex items-center gap-x-3 rounded-md border px-3 py-1.5 text-sm duration-200 hover:bg-background md:order-last lg:text-base">
+                <p>برگشت به بالا</p>
+                <i class="i-carbon-chevron-up h-4 w-4"></i>
+            </button>
+        </div>
+    </div>
+</footer>

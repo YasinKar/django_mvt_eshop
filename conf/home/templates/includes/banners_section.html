@@ -1,0 +1,24 @@
+{% if sliders.exists %}
+<!-- Banners Section -->
+<section>
+    <div class="swiper main-banner group">
+        <div class="swiper-wrapper">
+            {% for slider in sliders %}
+            <div class="swiper-slide">
+                <a href="{{slider.url}}" target="_blank">
+                    <!-- Desktop -->
+                    <img src="{{slider.image.url}}" alt="Banner{{slider.id}}"
+                        class="mx-auto hidden aspect-[2/1] object-cover sm:block md:aspect-[3/1] lg:aspect-auto" />
+                    <!-- Mobile -->
+                    <img src="{{slider.image.url}}" alt="Banner{{slider.id}}"
+                        class="aspect-[2/1] object-cover sm:hidden" />
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="swiper-button-next main-banner-nav-button !right-[50px]"></div>
+        <div class="swiper-button-prev main-banner-nav-button"></div>
+        <div class="swiper-pagination"></div>
+    </div>
+</section>
+{% endif %}

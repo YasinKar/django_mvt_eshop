@@ -1,0 +1,352 @@
+{% extends 'shared/base.html' %}
+{% load render_partial %}
+{% block page_title %}ادرس ها{% endblock %}
+
+{% block content %}
+<main class="flex-grow bg-background pt-[106px]">
+    <div class="container grid grid-cols-12 gap-4 pb-28 pt-10 lg:pb-10">
+        <!-- Sidebar -->
+        {% render_partial 'dashboard.views.DashboardSidebarPartialView' %}
+        <!-- Content -->
+        <div class="col-span-12 lg:col-span-9">
+            <div class="rounded-lg bg-muted shadow">
+                <div class="py-5">
+                    <div class="mb-16 flex justify-between px-5">
+                        <h1 class="relative w-fit font-medium lg:text-lg">
+                            آدرس های شما
+                            <span
+                                class="absolute right-0 top-10 h-[3px] w-full animate-fill-border rounded-full bg-primary"></span>
+                        </h1>
+                        <button class="btn-primary flex items-center gap-1 px-4 py-1.5"
+                            data-modal-target="address-add-modal" data-modal-toggle="address-add-modal">
+                            <div class="i-material-symbols-add-location-alt-outline-rounded size-6"></div>
+                            آدرس جدید
+                        </button>
+                    </div>
+                    <ul class="mb-4 space-y-4 px-5">
+                        {% for address in addresses %}
+                        <li>
+                            <div class="relative block rounded-lg border p-4 shadow hover:border-border/50">
+                                <div class="mb-4 flex justify-between gap-x-2 sm:mb-2">
+                                    <div class="line-clamp-1 text-sm text-text/95 xs:text-base">
+                                        <div class="flex gap-1">
+                                            <div class="flex min-w-fit">
+                                                <p>{{address.province}},</p>
+                                                <p>{{address.city}}</p>
+                                            </div>
+                                            <p>{{address.address}}</p>
+                                        </div>
+                                        <div class="flex gap-1">
+                                            <p>پلاک {{address.building_number}}</p>
+                                            <p>- کد پستی {{address.building_unit}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+                                    <p class="line-clamp-1 text-sm text-text/60">
+                                        {{address.receiver_first_name}} {{address.receiver_last_name}}
+                                    </p>
+                                    <div>
+                                        <button type="button" data-modal-target="remove-{{address.id}}"
+                                            data-modal-toggle="remove-{{address.id}}"
+                                            class="inline-flex h-8 w-full items-center justify-center gap-x-2 whitespace-nowrap rounded-md bg-warning/10 px-3 text-sm font-medium text-warning ring-offset-background transition-colors hover:bg-warning/20 focus-visible:outline-none focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
+                                            <div class="i-material-symbols-wrong-location-outline-rounded size-5">
+                                            </div>
+                                            حذف
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="px-5">
+                        <button type="button" data-modal-target="address-add-modal"
+                            data-modal-toggle="address-add-modal"
+                            class="not-prose relative flex w-full cursor-pointer rounded-md border text-sm transition-all duration-150 hover:bg-background hover:text-success disabled:cursor-not-allowed disabled:blur">
+                            <span class="w-full">
+                                <span
+                                    class="relative flex h-20 w-full select-none items-center justify-center overflow-hidden rounded opacity-75">
+                                    <svg class="absolute inset-0 h-full w-full stroke-border" fill="none">
+                                        <defs>
+                                            <pattern id="pattern-5c1e4f0e-62d5-498b-8ff0-cf77bb448c8e" x="0" y="0"
+                                                width="10" height="10" patternUnits="userSpaceOnUse">
+                                                <path d="M-3 13 15-5M-5 5l18-18M-1 21 17 3"></path>
+                                            </pattern>
+                                        </defs>
+                                        <rect stroke="none" fill="url(#pattern-5c1e4f0e-62d5-498b-8ff0-cf77bb448c8e)"
+                                            width="100%" height="100%"></rect>
+                                    </svg>
+                                    <span
+                                        class="i-material-symbols-add-location-alt-outline-rounded z-10 size-8 text-primary">
+                                    </span>
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Address Add modal -->
+<div id="address-add-modal" tabindex="-1" aria-hidden="true"
+    class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full overflow-y-auto overflow-x-hidden p-4 md:inset-0">
+    <div class="relative max-h-full w-full max-w-xl">
+        <div class="overflow-hidden rounded-lg border bg-muted shadow">
+            <!-- Header -->
+            <div class="px-4 py-5 sm:px-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="md:text-lg">ثبت آدرس جدید</h3>
+
+                    <button class="text-text/60 duration-300 hover:text-text/95" data-modal-hide="address-add-modal"
+                        type="button">
+                        <div class="i-lucide-x size-6"></div>
+
+                        <span class="sr-only">Close menu</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Add Address Form  -->
+            <form action="{% url 'dashboard_addresses_page' %}" method="post">
+                {% csrf_token %}
+                <div class="space-y-6 px-4 py-5 sm:p-6">
+                    <!-- Content -->
+                    <div class="mb-4 grid grid-cols-2 gap-x-4 gap-y-2 sm:gap-6 sm:gap-y-4">
+                        <!-- Name -->
+                        <div class="col-span-2 sm:col-span-1">
+                            <div class="w-full space-y-3">
+                                <label for="name"
+                                    class="relative block w-full rounded-lg border bg-muted shadow-sm duration-300 focus-within:border-primary">
+                                    {{ form.receiver_first_name }}
+                                    <span
+                                        class="pointer-events-none absolute start-3 -translate-y-1/2 rounded-full bg-muted px-2 text-xs text-text/80 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:text-xs peer-focus:peer-placeholder-shown:top-0 xs:text-sm md:text-sm md:peer-placeholder-shown:text-base md:peer-focus:text-sm lg:start-5">
+                                        نام گیرنده
+                                    </span>
+                                </label>
+                                {% if form.receiver_first_name.errors %}
+                                <p class="h-5 text-sm text-warning">
+                                    {{ form.receiver_first_name.errors.0 }}
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- Family -->
+                        <div class="col-span-2 sm:col-span-1">
+                            <div class="w-full space-y-3">
+                                <label for="family"
+                                    class="relative block w-full rounded-lg border bg-muted shadow-sm duration-300 focus-within:border-primary">
+                                    {{ form.receiver_last_name }}
+                                    <span
+                                        class="pointer-events-none absolute start-3 -translate-y-1/2 rounded-full bg-muted px-2 text-xs text-text/80 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:text-xs peer-focus:peer-placeholder-shown:top-0 xs:text-sm md:text-sm md:peer-placeholder-shown:text-base md:peer-focus:text-sm lg:start-5">
+                                        نام خانوادگی گیرنده
+                                    </span>
+                                </label>
+                                {% if form.receiver_last_name.errors %}
+                                <p class="h-5 text-sm text-warning">
+                                    {{ form.receiver_last_name.errors.0 }}
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- Phone -->
+                        <div class="col-span-2 sm:col-span-1">
+                            <div class="w-full space-y-3">
+                                <label for="phone"
+                                    class="relative block w-full rounded-lg border bg-muted shadow-sm duration-300 focus-within:border-primary">
+                                    {{ form.phone }}
+                                    <span
+                                        class="pointer-events-none absolute start-3 -translate-y-1/2 rounded-full bg-muted px-2 text-xs text-text/80 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:text-xs peer-focus:peer-placeholder-shown:top-0 xs:text-sm md:text-sm md:peer-placeholder-shown:text-base md:peer-focus:text-sm lg:start-5">
+                                        شماره تماس گیرنده
+                                    </span>
+                                </label>
+                                {% if form.phone.errors %}
+                                <p class="h-5 text-sm text-warning">
+                                    {{ form.phone.errors.0 }}
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- National Code-->
+                        <div class="col-span-2 sm:col-span-1">
+                            <div class="w-full space-y-3">
+                                <label for="nCode"
+                                    class="relative block w-full rounded-lg border bg-muted shadow-sm duration-300 focus-within:border-primary">
+                                    {{ form.national_code }}
+                                    <span
+                                        class="pointer-events-none absolute start-3 -translate-y-1/2 rounded-full bg-muted px-2 text-xs text-text/80 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:text-xs peer-focus:peer-placeholder-shown:top-0 xs:text-sm md:text-sm md:peer-placeholder-shown:text-base md:peer-focus:text-sm lg:start-5">
+                                        کد ملی گیرنده
+                                    </span>
+                                </label>
+                                {% if form.national_code.errors %}
+                                <p class="h-5 text-sm text-warning">
+                                    {{ form.national_code.errors.0 }}
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- Address -->
+                        <div class="col-span-2">
+                            <div class="w-full space-y-3">
+                                <label for="address"
+                                    class="relative block w-full rounded-lg border bg-muted shadow-sm duration-300 focus-within:border-primary">
+                                    {{ form.address }}
+                                    <span
+                                        class="pointer-events-none absolute start-3 -translate-y-1/2 rounded-full bg-muted px-2 text-xs text-text/80 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:text-xs peer-focus:peer-placeholder-shown:top-0 xs:text-sm md:text-sm md:peer-placeholder-shown:text-base md:peer-focus:text-sm lg:start-5">
+                                        نشانی گیرنده
+                                    </span>
+                                </label>
+                                {% if form.address.errors %}
+                                <p class="h-5 text-sm text-warning">
+                                    {{ form.address.errors.0 }}
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- Province -->
+                        <div class="col-span-2 sm:col-span-1">
+                            <div class="w-full space-y-3">
+                                <label for="province"
+                                    class="relative block w-full rounded-lg border bg-muted shadow-sm duration-300 focus-within:border-primary">
+                                    {{ form.province }}
+                                    <span
+                                        class="pointer-events-none absolute start-3 -translate-y-1/2 rounded-full bg-muted px-2 text-xs text-text/80 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:text-xs peer-focus:peer-placeholder-shown:top-0 xs:text-sm md:text-sm md:peer-placeholder-shown:text-base md:peer-focus:text-sm lg:start-5">
+                                        استان
+                                    </span>
+                                </label>
+                                {% if form.province.errors %}
+                                <p class="h-5 text-sm text-warning">
+                                    {{ form.province.errors.0 }}
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- City -->
+                        <div class="col-span-2 sm:col-span-1">
+                            <div class="w-full space-y-3">
+                                <label for="city"
+                                    class="relative block w-full rounded-lg border bg-muted shadow-sm duration-300 focus-within:border-primary">
+                                    {{ form.city }}
+                                    <span
+                                        class="pointer-events-none absolute start-3 -translate-y-1/2 rounded-full bg-muted px-2 text-xs text-text/80 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:text-xs peer-focus:peer-placeholder-shown:top-0 xs:text-sm md:text-sm md:peer-placeholder-shown:text-base md:peer-focus:text-sm lg:start-5">
+                                        شهر
+                                    </span>
+                                </label>
+                                {% if form.city.errors %}
+                                <p class="h-5 text-sm text-warning">
+                                    {{ form.city.errors.0 }}
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- Building Number -->
+                        <div class="col-span-2 sm:col-span-1">
+                            <div class="w-full space-y-3">
+                                <label for="bNumber"
+                                    class="relative block w-full rounded-lg border bg-muted shadow-sm duration-300 focus-within:border-primary">
+                                    {{ form.building_number }}
+                                    <span
+                                        class="pointer-events-none absolute start-3 -translate-y-1/2 rounded-full bg-muted px-2 text-xs text-text/80 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:text-xs peer-focus:peer-placeholder-shown:top-0 xs:text-sm md:text-sm md:peer-placeholder-shown:text-base md:peer-focus:text-sm lg:start-5">
+                                        پلاک
+                                    </span>
+                                </label>
+                                {% if form.building_number.errors %}
+                                <p class="h-5 text-sm text-warning">
+                                    {{ form.building_number.errors.0 }}
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- Building Unit -->
+                        <div class="col-span-2 sm:col-span-1">
+                            <div class="w-full space-y-3">
+                                <label for="bUnit"
+                                    class="relative block w-full rounded-lg border bg-muted shadow-sm duration-300 focus-within:border-primary">
+                                    {{ form.building_unit }}
+                                    <span
+                                        class="pointer-events-none absolute start-3 -translate-y-1/2 rounded-full bg-muted px-2 text-xs text-text/80 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:text-xs peer-focus:peer-placeholder-shown:top-0 xs:text-sm md:text-sm md:peer-placeholder-shown:text-base md:peer-focus:text-sm lg:start-5">
+                                        واحد
+                                    </span>
+                                </label>
+                                {% if form.building_unit.errors %}
+                                <p class="h-5 text-sm text-warning">
+                                    {{ form.building_unit.errors.0 }}
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- Post Code -->
+                        <div class="col-span-2 sm:col-span-1">
+                            <div class="w-full space-y-3">
+                                <label for="pCode"
+                                    class="relative block w-full rounded-lg border bg-muted shadow-sm duration-300 focus-within:border-primary">
+                                    {{ form.post_code }}
+                                    <span
+                                        class="pointer-events-none absolute start-3 -translate-y-1/2 rounded-full bg-muted px-2 text-xs text-text/80 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:text-xs peer-focus:peer-placeholder-shown:top-0 xs:text-sm md:text-sm md:peer-placeholder-shown:text-base md:peer-focus:text-sm lg:start-5">
+                                        کد پستی
+                                    </span>
+                                </label>
+                                {% if form.post_code.errors %}
+                                <p class="h-5 text-sm text-warning">
+                                    {{ form.post_code.errors.0 }}
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex justify-end space-x-3">
+                        <button type="submit" class="btn-primary flex w-full items-center gap-1 px-4 py-3 md:w-auto">
+                            <span class="i-material-symbols-add-location-alt-outline-rounded size-6">
+                            </span>
+                            <span> ثبت آدرس جدید </span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% for address in addresses %}
+<!-- Address Remove modal -->
+<div id="remove-{{address.id}}" tabindex="-1" aria-hidden="true"
+    class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full overflow-y-auto overflow-x-hidden p-4 md:inset-0">
+    <div class="relative max-h-full w-full max-w-sm">
+        <div class="overflow-hidden rounded-lg border bg-muted shadow">
+            <!-- Header -->
+            <div class="px-4 py-5 sm:px-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="md:text-lg">حذف آدرس</h3>
+
+                    <button class="text-text/60 duration-300 hover:text-text/95" data-modal-hide="remove-{{address.id}}"
+                        type="button">
+                        <div class="i-lucide-x size-6"></div>
+
+                        <span class="sr-only">Close menu</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="space-y-6 px-4 py-5 sm:p-6">
+                <!-- Content -->
+                <p>آیا از حذف این آدرس اطمینان دارید؟</p>
+                <!-- Footer -->
+                <div class="flex justify-end gap-4">
+                    <button data-modal-hide="remove-{{address.id}}" type="button"
+                        class="btn-secondary w-full rounded-lg px-4 py-2 md:w-auto">
+                        <span> انصراف </span>
+                    </button>
+                    <a href="{% url 'dashboard_remove_address_page' %}?address_id={{address.id}}" type="button"
+                        class="btn-warning w-full rounded-lg px-4 py-2 md:w-auto">
+                        <span> حذف آدرس </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

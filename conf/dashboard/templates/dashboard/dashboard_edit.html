@@ -1,0 +1,408 @@
+{% extends 'shared/base.html' %}
+{% load render_partial %}
+{% block page_title %}اطلاعات حساب کاربری{% endblock %}
+
+{% block content %}
+<main class="flex-grow bg-background pt-[106px]">
+    <div class="container grid grid-cols-12 gap-4 pb-28 pt-10 lg:pb-10">
+        <!-- Sidebar -->
+        {% render_partial 'dashboard.views.DashboardSidebarPartialView' %}
+        <!-- Content -->
+        <div class="col-span-12 lg:col-span-9">
+            <div class="rounded-lg bg-muted shadow">
+                <div class="py-5">
+                    <div class="mb-16 flex justify-between px-5">
+                        <h1 class="relative w-fit font-medium lg:text-lg">
+                            اطلاعات حساب کاربری شما
+                            <span
+                                class="absolute right-0 top-10 h-[3px] w-full animate-fill-border rounded-full bg-primary"></span>
+                        </h1>
+                    </div>
+                    <div class="grid grid-cols-2 gap-6 px-5">
+                        <!-- Full Name  -->
+                        <div class="col-span-2 sm:col-span-1">
+                            <button class="w-full" type="button" data-modal-target="fullname-modal"
+                                data-modal-toggle="fullname-modal">
+                                <div class="relative rounded-lg border p-4 hover:border-border/50">
+                                    <div class="flex justify-between">
+                                        <div class="flex flex-col items-start gap-y-2">
+                                            <div class="text-text/60">نام و نام خانوادگی</div>
+                                            <div class="mr-2 text-text/80">
+                                                {% if user.first_name and user.last_name %}
+                                                {{user.first_name}} {{user.last_name}}
+                                                {% else %}
+                                                <h2>تکمیل نشده</h2>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <div class="i-lucide-pen size-5 text-primary"></div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                        <!-- Username  -->
+                        <div class="col-span-2 sm:col-span-1">
+                            <button class="w-full" type="button" data-modal-target="nCode-modal"
+                                data-modal-toggle="nCode-modal">
+                                <div class="relative rounded-lg border p-4 hover:border-border/50">
+                                    <div class="flex justify-between">
+                                        <div class="flex flex-col items-start gap-y-2">
+                                            <div class="text-text/60">نام کاربری</div>
+                                            {% if user.username %}
+                                            {{user.username}}
+                                            {% else %}
+                                            <h2>تکمیل نشده</h2>
+                                            {% endif %}
+                                        </div>
+                                        <div class="i-lucide-pen size-5 text-primary"></div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                        <!-- Phone  -->
+                        <div class="col-span-2 sm:col-span-1">
+                                <div class="relative rounded-lg border p-4 hover:border-border/50">
+                                    <div
+                                        class="absolute inset-x-0 -bottom-2.5 mx-auto w-fit rounded-full bg-muted px-3 text-sm font-medium text-success">
+                                        تایید شده
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <div class="flex flex-col items-start gap-y-2">
+                                            <div class="text-text/60">شماره موبایل</div>
+                                            <div class="mr-2 text-text/80">
+                                                {% if user.phone %}
+                                                {{user.phone}}
+                                                {% else %}
+                                                <h2>تکمیل نشده</h2>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                        <!-- Email  -->
+                        <div class="col-span-2 sm:col-span-1">
+                            <button class="w-full" type="button" data-modal-target="email-modal"
+                                data-modal-toggle="email-modal">
+                                <div class="relative rounded-lg border p-4 hover:border-border/50">
+                                    <div class="flex justify-between">
+                                        <div class="flex flex-col items-start gap-y-2">
+                                            <div class="text-text/60">ایمیل</div>
+                                            <div class="mr-2 text-text/80">
+                                                {% if user.email %}
+                                                {{user.email}}
+                                                {% else %}
+                                                <h2>تکمیل نشده</h2>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="i-lucide-pen size-5 text-primary"></div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="col-span-2 flex flex-col sm:flex-row justify-between items-center">
+                            <p>تاریخ عضویت : {{user.date_joined}}</p>
+                            <p>
+                                {% if user.is_staff %}
+                                وضعیت حساب : کارمندی
+                                {% else %}
+                                نوع حساب : کاربری
+                                {% endif %}
+                            </p>
+                            <p>
+                                {% if user.is_active %}
+                                وضعیت حساب : فعال
+                                {% else %}
+                                وضعیت حساب : غیر فعال
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Full name Modal -->
+<div id="fullname-modal" tabindex="-1" aria-hidden="true"
+    class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full overflow-y-auto overflow-x-hidden p-4 md:inset-0">
+    <div class="relative max-h-full w-full max-w-md">
+        <div class="overflow-hidden rounded-lg border bg-muted shadow">
+            <!-- Header -->
+            <div class="px-4 py-5 sm:px-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="md:text-lg">تغییر نام و نام خانوادگی</h3>
+
+                    <button class="text-text/60 duration-300 hover:text-text/95" data-modal-hide="fullname-modal"
+                        type="button">
+                        <div class="i-lucide-x size-6"></div>
+                        <span class="sr-only">Close menu</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="space-y-6 px-4 py-5 sm:p-6">
+                <form action="{% url 'dashboard_edit_page' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{user.username}}" name="username">
+                    <input type="hidden" value="{{user.email}}" name="email">
+                    <div class="mb-4 grid grid-cols-2 gap-x-4 gap-y-2 sm:gap-6 sm:gap-y-4">
+                        <!-- Name -->
+                        <div class="col-span-2 sm:col-span-1">
+                            <div class="w-full space-y-3">
+                                <label for="first_name"
+                                    class="relative block w-full rounded-lg border bg-muted shadow-sm duration-300 focus-within:border-primary">
+                                    {{ form.first_name }}
+                                    <span
+                                        class="pointer-events-none absolute start-3 -translate-y-1/2 rounded-full bg-muted px-2 text-xs text-text/80 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:text-xs peer-focus:peer-placeholder-shown:top-0 xs:text-sm md:text-sm md:peer-placeholder-shown:text-base md:peer-focus:text-sm lg:start-5">
+                                        نام
+                                    </span>
+                                </label>
+                                <p class="h-5 text-sm text-warning">
+                                    {{ form.first_name.errors }}
+                                </p>
+                            </div>
+                        </div>
+                        <!-- Family -->
+                        <div class="col-span-2 sm:col-span-1">
+                            <div class="w-full space-y-3">
+                                <label for="last_name"
+                                    class="relative block w-full rounded-lg border bg-muted shadow-sm duration-300 focus-within:border-primary">
+                                    {{ form.last_name }}
+                                    <span
+                                        class="pointer-events-none absolute start-3 -translate-y-1/2 rounded-full bg-muted px-2 text-xs text-text/80 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:text-xs peer-focus:peer-placeholder-shown:top-0 xs:text-sm md:text-sm md:peer-placeholder-shown:text-base md:peer-focus:text-sm lg:start-5">
+                                        نام خانوادگی
+                                    </span>
+                                </label>
+                                <p class="text-sm text-red-500">
+                                    {{ form.last_name.errors }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Footer -->
+                    <div class="flex justify-end gap-4">
+                        <button type="submit" class="btn-primary w-full rounded-lg px-4 py-2 md:w-auto">
+                            ویرایش
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Username Modal -->
+<div id="nCode-modal" tabindex="-1" aria-hidden="true"
+    class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full overflow-y-auto overflow-x-hidden p-4 md:inset-0">
+    <div class="relative max-h-full w-full max-w-md">
+        <div class="overflow-hidden rounded-lg border bg-muted shadow">
+            <!-- Header -->
+            <div class="px-4 py-5 sm:px-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="md:text-lg">تغییر نام کاربری</h3>
+
+                    <button class="text-text/60 duration-300 hover:text-text/95" data-modal-hide="nCode-modal"
+                        type="button">
+                        <div class="i-lucide-x size-6"></div>
+                        <span class="sr-only">Close menu</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="space-y-6 px-4 py-5 sm:p-6">
+                <form action="{% url 'dashboard_edit_page' %}" method="post">
+                    {% csrf_token %}
+                    <!-- Content -->
+                    <input type="hidden" value="{{user.first_name}}" name="first_name">
+                    <input type="hidden" value="{{user.last_name}}" name="last_name">
+                    <input type="hidden" value="{{user.email}}" name="email">
+                    <div class="mb-4">
+                        <!-- Username -->
+                        <div>
+                            <div class="w-full space-y-3">
+                                <label for="username"
+                                    class="relative block w-full rounded-lg border bg-muted shadow-sm duration-300 focus-within:border-primary">
+                                    {{ form.username }}
+                                    <span
+                                        class="pointer-events-none absolute start-3 -translate-y-1/2 rounded-full bg-muted px-2 text-xs text-text/80 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:text-xs peer-focus:peer-placeholder-shown:top-0 xs:text-sm md:text-sm md:peer-placeholder-shown:text-base md:peer-focus:text-sm lg:start-5">
+                                        نام کاربری
+                                    </span>
+                                </label>
+                                <p class="text-sm text-red-500">
+                                    {{ form.username.errors }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Footer -->
+                    <div class="flex justify-end gap-4">
+                        <button type="submit" class="btn-primary w-full rounded-lg px-4 py-2 md:w-auto">
+                            ویرایش
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Email Modal -->
+<div id="email-modal" tabindex="-1" aria-hidden="true"
+    class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full overflow-y-auto overflow-x-hidden p-4 md:inset-0">
+    <div class="relative max-h-full w-full max-w-md">
+        <div class="overflow-hidden rounded-lg border bg-muted shadow">
+            <!-- Header -->
+            <div class="px-4 py-5 sm:px-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="md:text-lg">تغییر ایمیل</h3>
+
+                    <button class="text-text/60 duration-300 hover:text-text/95" data-modal-hide="email-modal"
+                        type="button">
+                        <div class="i-lucide-x size-6"></div>
+                        <span class="sr-only">Close menu</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="space-y-6 px-4 py-5 sm:p-6">
+                <form action="{% url 'dashboard_edit_page' %}" method="post">
+                    <input type="hidden" value="{{user.first_name}}" name="first_name">
+                    <input type="hidden" value="{{user.last_name}}" name="last_name">
+                    <input type="hidden" value="{{user.username}}" name="username">
+                    {% csrf_token %}
+                    <!-- Content -->
+                    <div class="mb-4">
+                        <!-- Email -->
+                        <div>
+                            <div class="w-full space-y-3">
+                                <label for="email"
+                                    class="relative block w-full rounded-lg border bg-muted shadow-sm duration-300 focus-within:border-primary">
+                                    {{ form.email }}
+                                    <span
+                                        class="pointer-events-none absolute start-3 -translate-y-1/2 rounded-full bg-muted px-2 text-xs text-text/80 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:text-xs peer-focus:peer-placeholder-shown:top-0 xs:text-sm md:text-sm md:peer-placeholder-shown:text-base md:peer-focus:text-sm lg:start-5">
+                                        ایمیل
+                                    </span>
+                                </label>
+                                <p class="text-sm text-red-500">
+                                    {{ form.email.errors }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Footer -->
+                    <div class="flex justify-end gap-4">
+                        <button type="submit" class="btn-primary w-full rounded-lg px-4 py-2 md:w-auto">
+                            ویرایش
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const passwordInput = document.getElementById("password");
+    const validationIndicator1 = document.getElementById(
+        "validationIndicator1",
+    );
+    const validationIndicator2 = document.getElementById(
+        "validationIndicator2",
+    );
+    const validationIndicator3 = document.getElementById(
+        "validationIndicator3",
+    );
+    const validationIndicator4 = document.getElementById(
+        "validationIndicator4",
+    );
+    const lengthValidation = document.getElementById("lengthValidation");
+    const lowercaseValidation = document.getElementById(
+        "lowercaseValidation",
+    );
+    const uppercaseValidation = document.getElementById(
+        "uppercaseValidation",
+    );
+    const numberValidation = document.getElementById("numberValidation");
+
+    function passwordHasLowercase(password) {
+        return /[a-z]/.test(password);
+    }
+
+    function passwordHasUppercase(password) {
+        return /[A-Z]/.test(password);
+    }
+
+    function passwordHasNumber(password) {
+        return /\d/.test(password);
+    }
+
+    function passwordIsValidPasswordLength(password) {
+        return password.length >= 6 && password.length <= 18;
+    }
+
+    passwordInput.addEventListener("input", function () {
+        const password = passwordInput.value;
+
+        const lowercaseValid = passwordHasLowercase(password);
+        const uppercaseValid = passwordHasUppercase(password);
+        const numberValid = passwordHasNumber(password);
+        const lengthValid = passwordIsValidPasswordLength(password);
+
+        const validCount = [
+            lengthValid,
+            lowercaseValid,
+            uppercaseValid,
+            numberValid,
+        ].filter(Boolean).length;
+
+        const validationClasses = [
+            "bg-zinc-200 dark:bg-zinc-600",
+            "bg-zinc-200 dark:bg-zinc-600",
+            "bg-zinc-200 dark:bg-zinc-600",
+            "bg-zinc-200 dark:bg-zinc-600",
+        ];
+
+        switch (validCount) {
+            case 1:
+                validationClasses[0] = "bg-red-500";
+                break;
+            case 2:
+                validationClasses[0] = "bg-yellow-500";
+                validationClasses[1] = "bg-yellow-500";
+                break;
+            case 3:
+                validationClasses[0] = "bg-sky-500";
+                validationClasses[1] = "bg-sky-500";
+                validationClasses[2] = "bg-sky-500";
+                break;
+            case 4:
+                validationClasses[0] = "bg-green-500 dark:bg-green-400";
+                validationClasses[1] = "bg-green-500 dark:bg-green-400";
+                validationClasses[2] = "bg-green-500 dark:bg-green-400";
+                validationClasses[3] = "bg-green-500 dark:bg-green-400";
+                break;
+            default:
+                break;
+        }
+
+        [
+            validationIndicator1,
+            validationIndicator2,
+            validationIndicator3,
+            validationIndicator4,
+        ].forEach((element, index) => {
+            element.className = `w-full h-[3px] rounded-full ${validationClasses[index]}`;
+        });
+
+        lengthValidation.style.display = lengthValid ? "none" : "block";
+        lowercaseValidation.style.display = lowercaseValid ? "none" : "block";
+        uppercaseValidation.style.display = uppercaseValid ? "none" : "block";
+        numberValidation.style.display = numberValid ? "none" : "block";
+    });
+</script>
+{% endblock %}

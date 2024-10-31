@@ -1,0 +1,33 @@
+{% load render_partial %}
+
+<!doctype html>
+<html lang="fa-IR" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="{% block meta_description %}{% endblock %}" />
+  {% if site_setting.site_icon %}
+  <link rel="icon" type="image/x-icon" href="{{site_setting.site_icon.url}}">
+  {% endif %}
+  <title>{{site_setting.site_name}} | {% block page_title %}{% endblock %}</title>
+  {% include 'shared/references/header_references.html' %}
+</head>
+
+<body>
+  {% if messages %}
+  {% for message in messages %}
+  <div class="fixed items-center text-center {% if message.tags == 'success' %}bg-green-500 text-white{% elif message.tags == 'error' %}bg-red-500 text-white{% endif %} z-40 w-full py-2">
+    {{ message }}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  {% render_partial 'home.views.HeaderPartialView' %}
+  {% block content%}{% endblock%}
+  {% render_partial 'home.views.FooterPartialView' %}
+  {% include 'shared/components/site_mobile_nav.html' %}
+  {% include 'shared/references/footer_references.html' %}
+</body>
+
+</html>

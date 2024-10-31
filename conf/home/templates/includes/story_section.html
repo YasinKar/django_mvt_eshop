@@ -1,0 +1,86 @@
+{% if stories.exists %}
+<!-- Story Section -->
+<section class="container">
+    <div class="swiper story-slider py-4">
+        <div class="swiper-wrapper !px-px py-2">
+            {% for story in stories %}
+            <div class="swiper-slide">
+                <div type="button" data-modal-target="story-{{story.id}}" data-modal-toggle="story-{{story.id}}"
+                    class="flex cursor-pointer flex-col items-center justify-center gap-2">
+                    <!-- Thumbnail -->
+                    <div class="size-20 overflow-hidden rounded-full border-[3px] border-white ring-2 ring-warning">
+                        <img src="{{story.thumbnail.url}}" alt="{{story.title}}" />
+                    </div>
+                    <!-- Title -->
+                    <p class="line-clamp-2 w-20 text-center text-xs">
+                        {{story.title}}
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="swiper-button-next main-slider-nav-button hidden md:flex"></div>
+        <div class="swiper-button-prev main-slider-nav-button hidden md:flex"></div>
+    </div>
+</section>
+
+{% for story in stories %}
+<!-- Story modal -->
+<div id="story-{{story.id}}" tabindex="-1" aria-hidden="true"
+    class="fixed left-0 right-0 top-0 z-50 hidden h-full max-h-full w-full overflow-y-auto p-4 md:inset-0">
+    <div class="lg:w-90 relative max-h-full w-full max-w-sm">
+        <div class="overflow-hidden rounded-lg">
+            <div data-story class="relative w-full [border-image:fill_0_linear-gradient(#0003,#000)]">
+                <div class="absolute inset-x-0 top-0 z-10 flex h-16 items-center rounded-b-lg px-4">
+                    <div class="flex w-full items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <!-- Close -->
+                            <button data-modal-hide="story-{{story.id}}" type="button">
+                                <span class="i-lucide-arrow-right size-7 stroke-2 text-white"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Muted -->
+                <div data-toggle-mute class="absolute inset-0 flex items-center justify-center">
+                    <div class="i-solar-muted-linear size-20 text-white"></div>
+                </div>
+                <div>
+                    <video data-video class="lazy-story object-cover" src="{{story.video.url}}" muted autoplay
+                        playsinline loop preload="auto"></video>
+                </div>
+                <div class="absolute inset-x-0 bottom-0 z-10 p-4">
+                    <div class="mb-6 flex items-end justify-between gap-20">
+                        <!-- Title -->
+                        <div class="line-clamp-2 text-lg font-medium text-white">
+                            {{story.title}}
+                        </div>
+                    </div>
+                    <!-- Controls -->
+                    <div class="flex items-center justify-between gap-6">
+                        <div class="w-full grow">
+                            <div data-bar></div>
+                        </div>
+                        <!-- Time -->
+                        <p data-time class="w-6 text-sm text-white"></p>
+                    </div>
+                </div>
+            </div>
+
+            {% if story.product %}
+            <div class="h-24 bg-background p-2">
+                <a href="{% url 'product_detail_page' story.product.slug %}"
+                    class="flex h-full items-center gap-4 rounded-lg bg-muted p-2">
+                    <img src="{{story.product.image.url}}" alt="{{story.product.name}}" class="size-16 rounded-full" />
+                    <p class="line-clamp-2 text-sm text-text/80">
+                        {{story.product.name}}
+                    </p>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endif %}

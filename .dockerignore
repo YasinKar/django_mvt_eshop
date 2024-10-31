@@ -1,0 +1,9 @@
+.git
+.gitignore
+
+.docker
+
+.env/
+.venv/
+venv/
+data/

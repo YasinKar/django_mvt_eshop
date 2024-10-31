@@ -1,0 +1,175 @@
+{% extends 'shared/base.html' %}
+{% load humanize %}
+{% block page_title %}سبد خرید{% endblock %}
+{% block meta_description %}سبد خرید کاربر-{{site_setting.site_name}}{% endblock %}
+{% block content%}
+
+<main class="flex-grow bg-background pt-[106px]">
+    <div class="container pb-28 pt-6 lg:pb-10">
+        <!--  Breadcrumb -->
+        <div class="mb-2 rounded-lg bg-muted shadow lg:mb-6">
+            <ol class="relative grid grid-cols-3 overflow-hidden rounded-lg">
+                <li
+                    class="z-10 flex flex-col items-center justify-center gap-2 p-4 text-xs text-primary sm:text-sm md:text-base">
+                    <div class="i-lucide-shopping-cart h-6 w-6 md:h-8 md:w-8"></div>
+                    <p class="leading-none">سبد خرید</p>
+                </li>
+                <li
+                    class="z-10 flex flex-col items-center justify-center gap-2 p-4 text-xs text-primary/50 sm:text-sm md:text-base">
+                    <div class="i-lucide-clipboard-pen-line h-6 w-6 md:h-8 md:w-8"></div>
+
+                    <p class="leading-none">شیوه ارسال</p>
+                </li>
+                <li
+                    class="z-10 flex flex-col items-center justify-center gap-2 p-4 text-xs text-primary/50 sm:text-sm md:text-base">
+                    <div class="i-lucide-credit-card h-6 w-6 md:h-8 md:w-8"></div>
+
+                    <p class="leading-none">پرداخت</p>
+                </li>
+                <!--  for position set value 0 , 33.33% , 66.66%  -->
+                <div class="absolute bottom-0 z-0 h-full w-1/3 touch-none bg-primary/10 transition-all duration-300"
+                    style="inset-inline-start: 0"></div>
+            </ol>
+        </div>
+        <!-- Content -->
+        <div class="grid grid-cols-12 gap-2 lg:gap-6">
+            <div class="col-span-12 lg:col-span-8">
+                <div class="rounded-lg bg-muted shadow">
+                    <div class="flex items-center justify-between gap-2 p-4">
+                        <h1 class="flex items-center gap-x-4 text-sm xs:text-base md:text-lg">
+                            سبد خرید
+                            <span class="text-sm text-text/60"> ( {{cart.orders.count}} کالا ) </span>
+                        </h1>
+                        {% if cart.orders.exists %}
+                        <a href="{% url 'remove_orders_page' %}"
+                            class="inline-flex h-9 items-center justify-center gap-x-2 whitespace-nowrap rounded-md px-3 text-sm font-medium text-warning ring-offset-background transition-colors hover:text-warning/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                            type="button">
+                            <div class="i-lucide-trash-2 h-5 w-5"></div>
+                            <span>حذف همه</span>
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% if cart.orders.exists %}
+                    <ul class="divide-y">
+                        {% for order in cart.orders.all %}
+                        <li>
+                            <div class="px-4 py-4 sm:py-6">
+                                <div
+                                    class="grid grid-cols-2 items-center justify-start gap-2 xs:grid-cols-3 xs:gap-6 sm:grid-cols-4 xl:grid-cols-6">
+                                    <div class="relative row-span-2 min-w-fit xs:mx-auto">
+                                        <a href="{% url 'product_detail_page' order.product.slug %}">
+                                            <img src="{{order.product.image.url}}" alt="{{order.product.name}}"
+                                                class="h-25 w-25 rounded-lg object-cover sm:h-28 sm:w-28" />
+                                        </a>
+                                        <a href="{% url 'remove_order_page' %}?order_id={{order.id}}"
+                                            class="absolute -top-2 right-0 rounded-lg border bg-muted duration-200 hover:bg-background">
+                                            <div class="i-lucide-trash m-2 h-5 w-5 text-warning"></div>
+                                        </a>
+                                    </div>
+                                    <div class="row-span-2 space-y-4 xs:col-span-2 sm:col-span-3 xl:col-span-5">
+                                        <a href="{% url 'product_detail_page' order.product.slug %}"
+                                            class="line-clamp-2 text-sm xs:text-base">{{order.product.name}}</a>
+                                        <div class="space-y-2 text-text/95">
+                                            <div class="flex flex-col gap-2">
+                                                {% if order.color %}
+                                                <div class="flex items-center gap-2">
+                                                    <div>رنگ</div>
+                                                    <div>
+                                                        <div>{{order.color}}</div>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-x-2 xs:justify-center">
+                                        <div
+                                            class="flex h-10 w-24 items-center justify-between rounded-lg border px-2 py-1">
+                                            <a href="{% url 'change_order_count_page' %}?state=increase&slug={{order.product.slug}}&color_id={{order.color.id}}"
+                                                type="button" class="text-success disabled:text-text/60">
+                                                <div class="i-lucide-plus size-6"></div>
+                                            </a>
+                                            <div
+                                                class="flex h-5 w-full grow select-none items-center justify-center bg-transparent text-center text-sm text-text outline-none">
+                                                {{order.count}}
+                                            </div>
+                                            <a href="{% url 'change_order_count_page' %}?state=decrease&slug={{order.product.slug}}&color_id={{order.color.id}}"
+                                                type="button" class="text-warning disabled:text-text/60">
+                                                <div class="i-lucide-minus size-6"></div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="flex items-center gap-2 text-primary xs:col-span-2 sm:col-span-3 lg:text-lg xl:col-span-5">
+                                        <span class="font-bold">
+                                            {% if order.product.is_sale%}
+                                            {{order.product.sale_price|intcomma}}
+                                            {% else %}
+                                            {{order.product.price|intcomma}}
+                                            {% endif%}
+                                        </span>
+                                        <span class="text-sm lg:text-base">تومان</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <div class="flex items-center justify-center ">
+                        <div class="flex flex-col items-center justify-center gap-4">
+
+                            <div class="i-lucide-package-x w-50 h-50"></div>
+                            <div>سبد خرید شما خالی می‌باشد</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="lg:col-span-4">
+                {% if cart.orders.exists %}
+                <div class="hidden rounded-lg bg-muted p-4 shadow lg:block">
+                    <div class="mb-2 divide-y">
+                        <div class="flex items-center justify-between gap-x-2 py-6">
+                            <div class="text-sm text-text/95 lg:text-base">
+                                تعداد کالا ها
+                            </div>
+                            <div class="flex items-center gap-1 text-sm lg:text-base">
+                                <div class="font-bold">{{cart.orders.count}}</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between gap-x-2 py-6">
+                            <div class="text-sm text-text/95 lg:text-base">
+                                مبلغ قابل پرداخت
+                            </div>
+                            <div class="flex items-center gap-1 text-sm text-primary lg:text-base">
+                                <div class="font-bold">{{cart.get_total_amount|intcomma}}</div>
+                                <div class="text-xs lg:text-sm">تومان</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <a aria-disabled="true" type="button" href="{% url 'cart_shipping_page' %}"
+                            class="inline-flex h-11 w-full items-center justify-center gap-x-2 whitespace-nowrap rounded-md bg-primary-btn px-8 text-sm font-medium text-white ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
+                            ادامه فرایند خرید
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+                {% if cart.orders.exists %}
+                <div class="fixed inset-x-0 bottom-0 z-20 rounded-t-xl bg-muted px-4 pb-20 pt-4 transition-all duration-300 lg:hidden"
+                    data-onscrollclass="translate-y-1/2">
+                    <div>
+                        <a href="{% url 'cart_shipping_page' %}"
+                            class="inline-flex h-10 w-full items-center justify-center gap-x-2 whitespace-nowrap rounded-md bg-primary-btn px-4 py-2 text-sm font-medium text-white ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
+                            ادامه | {{cart.get_total_amount|intcomma}}
+                            <span class="text-xs"> تومان </span>
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock%}

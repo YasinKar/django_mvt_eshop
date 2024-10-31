@@ -1,0 +1,10 @@
+<!-- 2 Banner Section -->
+<section class="container py-10">
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {% for banner in banners %}
+        <a href="{{banner.url}}" target="_blank">
+            <img src="{{banner.image.url}}" alt="Banner {{banner.id}}" class="rounded-lg" />
+        </a>
+        {% endfor %}
+    </div>
+</section>

@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7.0.11-alpine
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  django:
+    image: django
+    container_name: ecommerce_website
+    build:
+      context: ./conf
+      dockerfile: Dockerfile
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./conf:/app/
+    ports:
+      - "8000:8000"
+    env_file: ./conf/.env
+    depends_on:
+      - redis
+      - rabbitmq
+      - db
+
+  celery:
+    image: celery
+    container_name: celery
+    build:
+      context: ./conf
+      dockerfile: Dockerfile
+    command: celery --app=conf worker -l INFO -Q tasks
+    volumes:
+      - ./conf:/app/
+    env_file: ./conf/.env
+    depends_on:
+      - redis
+      - django
+      - rabbitmq
+
+  flower:
+    image: mher/flower
+    ports:
+      - "5555:5555"
+    environment:
+      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672/

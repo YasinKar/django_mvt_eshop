@@ -1,0 +1,202 @@
+<div class="col-span-12 lg:col-span-3">
+    <!-- Profile, Edit, Menu -->
+    <div class="mb-4 rounded-lg bg-muted p-4 shadow">
+        <!-- Desktop -->
+        <div class="hidden items-center justify-between gap-2 lg:flex">
+            <div class="flex items-center gap-4">
+                <div
+                    class="flex h-10 w-10 items-center justify-center rounded-full bg-primary-btn text-center text-lg font-semibold text-white">
+                    {{current_user.username.0}}
+                </div>
+                <p class="line-clamp-1">{{current_user.username}}</p>
+            </div>
+            <a href="{% url 'dashboard_edit_page' %}"
+                class="rounded-full text-sm text-primary duration-300 hover:text-primary/80">
+                <div class="i-lucide-pen-line size-6"></div>
+            </a>
+        </div>
+        <!-- Mobile -->
+        <div class="flex items-center justify-center lg:hidden">
+            <div class="flex flex-col items-center justify-center gap-y-4">
+                <div class="relative">
+                    <div
+                        class="flex h-16 w-16 items-center justify-center rounded-full bg-primary-btn text-center text-lg font-semibold text-white">
+                        {{current_user.username.0}}
+                    </div>
+                    <a href="{% url 'dashboard_edit_page' %}"
+                        class="absolute -right-3 -top-2 rounded-full border bg-muted p-1.5 text-sm text-primary">
+                        <div class="i-lucide-pen-line size-5"></div>
+                    </a>
+                </div>
+                <div>
+                    <p class="line-clamp-1">{{current_user.username}}</p>
+                </div>
+                <div>
+                    <button type="button" data-drawer-target="profile-drawer" data-drawer-show="profile-drawer"
+                        data-drawer-placement="bottom" aria-controls="profile-drawer"
+                        class="btn-primary flex items-center gap-1 px-4 py-2">
+                        <div class="i-lucide-align-justify size-5"></div>
+                        منوی پنل کاربری
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desktop Links -->
+    <div class="hidden rounded-lg shadow lg:block">
+        <ul class="relative space-y-2 rounded-lg bg-muted p-2">
+            <li>
+                <a href="{% url 'dashboard_page' %}"
+                    class="{% if request.resolver_match.url_name == 'dashboard_page' %}text-primary bg-primary/5{% endif %} inline-flex w-full items-center justify-between rounded-lg p-4 duration-300">
+                    <div class="flex items-center gap-4">
+                        <div class="i-solar-home-smile-linear size-6"></div>
+                        پیشخوان
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'dashboard_edit_page' %}"
+                    class="{% if request.resolver_match.url_name == 'dashboard_edit_page' %}text-primary bg-primary/5{% endif %} inline-flex w-full items-center justify-between rounded-lg p-4 duration-300">
+                    <div class="flex items-center gap-4">
+                        <div class="i-lucide-user-cog size-6"></div>
+                        اطلاعات حساب کاربری
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'dashboard_orders_page' %}"
+                    class="{% if request.resolver_match.url_name == 'dashboard_orders_page' %}text-primary bg-primary/5{% endif %} inline-flex w-full items-center justify-between rounded-lg p-4 duration-300">
+                    <div class="flex items-center gap-4">
+                        <div class="i-mingcute-shopping-bag-3-line size-6"></div>
+                        سفارش ها
+                    </div>
+                    <div class="h-6 w-6 rounded-full bg-yellow-500 text-center leading-6 text-white dark:bg-yellow-600">
+                        {{carts.count}}
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'dashboard_messages_page' %}"
+                    class="{% if request.resolver_match.url_name == 'dashboard_messages_page' %}text-primary bg-primary/5{% endif %} inline-flex w-full items-center justify-between rounded-lg p-4 duration-300">
+                    <div class="flex items-center gap-4">
+                        <div class="i-lucide-bell size-6"></div>
+                        پیام ها
+                    </div>
+                    <div class="h-6 w-6 rounded-full bg-primary-btn text-center leading-6 text-white">
+                        {{user.messages.count}}
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'dashboard_favorites_page' %}"
+                    class="{% if request.resolver_match.url_name == 'dashboard_favorites_page' %}text-primary bg-primary/5{% endif %} inline-flex w-full items-center justify-between rounded-lg p-4 duration-300">
+                    <div class="flex items-center gap-4">
+                        <div class="i-lucide-heart size-6"></div>
+                        علاقه‌‍مندی ها
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'dashboard_addresses_page' %}"
+                    class="{% if request.resolver_match.url_name == 'dashboard_addresses_page' %}text-primary bg-primary/5{% endif %} inline-flex w-full items-center justify-between rounded-lg p-4 duration-300">
+                    <div class="flex items-center gap-4">
+                        <div class="i-material-symbols-location-on-outline-rounded size-6"></div>
+                        آدرس ها
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'logout_page' %}" type="button"
+                    class="inline-flex w-full items-center justify-between p-4 text-warning">
+                    <div class="flex items-center gap-4">
+                        <div class="i-mingcute-exit-line size-6"></div>
+                        خروج
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- Profile Link Drawer -->
+<div id="profile-drawer"
+    class="fixed inset-x-0 bottom-0 z-40 max-h-[80dvh] w-full translate-y-full rounded-t-xl border-t bg-muted transition-transform duration-500"
+    tabindex="-1" aria-labelledby="profile-drawer">
+    <div class="flex h-full max-h-[80dvh] flex-col gap-4">
+        <!-- Items -->
+        <div class="grow overflow-y-auto">
+            <ul class="space-y-2 p-4 pl-2">
+                <li>
+                    <a href="{% url 'dashboard_page' %}"
+                        class="inline-flex w-full items-center justify-between rounded-lg p-4 duration-300 hover:text-primary {% if request.resolver_match.url_name == 'dashboard_page' %}text-primary bg-primary/5{% endif %}">
+                        <div class="flex items-center gap-4">
+                            <div class="i-solar-home-smile-linear size-6"></div>
+                            پیشخوان
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'dashboard_edit_page' %}"
+                        class="inline-flex w-full items-center justify-between rounded-lg p-4 duration-300 hover:text-primary {% if request.resolver_match.url_name == 'dashboard_edit_page' %}text-primary bg-primary/5{% endif %}">
+                        <div class="flex items-center gap-4">
+                            <div class="i-lucide-user-cog size-6"></div>
+                            اطلاعات حساب کاربری
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'dashboard_orders_page' %}"
+                        class="inline-flex w-full items-center justify-between rounded-lg p-4 duration-300 hover:text-primary {% if request.resolver_match.url_name == 'dashboard_orders_page' %}text-primary bg-primary/5{% endif %}">
+                        <div class="flex items-center gap-4">
+                            <div class="i-mingcute-shopping-bag-3-line size-6"></div>
+                            سفارش ها
+                        </div>
+                        <div
+                            class="h-6 w-6 rounded-full bg-yellow-500 text-center leading-6 text-white dark:bg-yellow-600">
+                            {{carts.count}}
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'dashboard_messages_page' %}"
+                        class="inline-flex w-full items-center justify-between rounded-lg p-4 duration-300 hover:text-primary {% if request.resolver_match.url_name == 'dashboard_messages_page' %}text-primary bg-primary/5{% endif %}">
+                        <div class="flex items-center gap-4">
+                            <div class="i-lucide-bell size-6"></div>
+                            پیام ها
+                        </div>
+                        <div class="h-6 w-6 rounded-full bg-primary-btn text-center leading-6 text-white">
+                            {{user.messages.count}}
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'dashboard_favorites_page' %}"
+                        class="inline-flex w-full items-center justify-between rounded-lg p-4 duration-300 hover:text-primary {% if request.resolver_match.url_name == 'dashboard_favorites_page' %}text-primary bg-primary/5{% endif %}">
+                        <div class="flex items-center gap-4">
+                            <div class="i-lucide-heart size-6"></div>
+                            علاقه‌‍مندی ها
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'dashboard_addresses_page' %}"
+                        class="inline-flex w-full items-center justify-between rounded-lg p-4 duration-300 hover:text-primary {% if request.resolver_match.url_name == 'dashboard_addresses_page' %}text-primary bg-primary/5{% endif %}">
+                        <div class="flex items-center gap-4">
+                            <div class="i-material-symbols-location-on-outline-rounded size-6"></div>
+                            آدرس ها
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'logout_page' %}" type="button" class="inline-flex w-full items-center justify-between p-4 text-warning ">
+                        <div class="flex items-center gap-4">
+                            <div class="i-mingcute-exit-line size-6"></div>
+                            خروج
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

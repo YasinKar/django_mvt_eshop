@@ -1,0 +1,16 @@
+{% load static %}
+
+<main class="flex-grow bg-background pt-[106px]">
+    <div class="flex h-[calc(100vh-106px)] items-center justify-center">
+        <div class="flex flex-col items-center justify-center gap-4">
+            <img src="{% static 'images/404.webp' %}" alt="404" class="max-w-lg" />
+            <h1 class="sr-only">404</h1>
+            <div class="text-xl">صفحه مورد نظر یافت نشد</div>
+            <a href="/"
+                class="flex items-center gap-1 rounded-lg bg-primary/15 px-4 py-2 text-primary duration-300 hover:text-primary/80">
+                برگشت به خانه
+                <span class="i-lucide-chevron-left size-5"></span>
+            </a>
+        </div>
+    </div>
+</main>

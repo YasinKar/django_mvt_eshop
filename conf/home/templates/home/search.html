@@ -1,0 +1,97 @@
+{% extends 'shared/base.html' %}
+{% block page_title %}نتایج جستجو برای {{request.GET.query}}{% endblock %}
+
+{% block content%}
+
+<main class="flex-grow bg-background pt-[106px]">
+    {% if results %}
+    <section class="container py-5">
+        <div
+            class="grid grid-cols-2 gap-px gap-y-2 xs:gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            {% for result in results %}
+            <div
+                class="border-gradient relative rounded-[--product-card-radius] p-px [--product-card-radius:theme(borderRadius.2xl)] before:absolute before:-inset-px before:h-[calc(100%+2px)] before:w-[calc(100%+2px)] before:rounded-[--product-card-radius] before:content-['']">
+                <a href="{% url 'product_detail_page' result.slug %}"
+                    class="relative block overflow-hidden rounded-[calc(var(--product-card-radius)-1px)] bg-muted">
+                    <div class="mb-4 bg-secondary p-2 lg:p-4">
+                        <!-- Special Sale Percentage  -->
+                        {% if result.is_sale %}
+                        <div
+                            class="absolute right-2 top-0 rounded-b-full bg-warning px-1 py-1.5 text-center text-sm font-medium text-white md:text-base">
+                            Off
+                        </div>
+                        {% endif %}
+                        <!-- Image -->
+                        <img src="{{result.image.url}}" alt="{{result.name}}"
+                            class="aspect-[1/1] w-full rounded-xl object-cover" />
+                    </div>
+                    <div class="mb-1 px-2 lg:px-4">
+                        <p class="line-clamp-2 h-10 text-sm xs:h-12 xs:text-base">
+                            {{result.name}}
+                        </p>
+
+                        <div class="gap-x-1 text-end font-bold text-primary">
+                            {% if result.is_sale %}
+                            <div class="h-5 text-end text-sm text-text/50 xs:text-base">
+                                <del>{{result.price}}</del>
+                            </div>
+
+                            <span class="text-sm xs:text-base">{{result.sale_price}}</span>
+                            <span class="text-sm font-light">تومان</span>
+                            {% else %}
+                            <span class="text-sm xs:text-base">{{result.price}}</span>
+                            <span class="text-sm font-light">تومان</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="h-8 px-2 lg:px-4">
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Pagination -->
+    <nav class="!mt-10">
+        <div class="flex items-center justify-center gap-1">
+            <!-- Previous  -->
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                class="inline-flex h-10 w-10 items-center justify-center whitespace-nowrap rounded-md border bg-muted p-0 text-sm font-medium ring-offset-background transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                aria-label="Previous Page" type="button">
+                <i class="i-lucide-chevron-right"></i>
+            </a>
+            {% endif %}
+
+            <!-- Current  -->
+            <a href="?page={{ page_obj.number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                class="inline-flex h-10 w-10 items-center justify-center whitespace-nowrap rounded-md border border-primary-btn bg-primary-btn p-0 text-sm font-medium text-white ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                data-type="page" aria-label="Page {{ page_obj.number }}" type="button">
+                {{ page_obj.number }}
+            </a>
+
+            <!-- Next  -->
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                class="inline-flex h-10 w-10 items-center justify-center whitespace-nowrap rounded-md border bg-muted p-0 text-sm font-medium ring-offset-background transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                data-type="page" aria-label="Page {{ page_obj.paginator.num_pages }}" type="button">
+                {{ page_obj.paginator.num_pages }}
+            </a>
+            <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                class="inline-flex h-10 w-10 items-center justify-center whitespace-nowrap rounded-md border bg-muted p-0 text-sm font-medium ring-offset-background transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                aria-label="Next Page" type="button">
+                <i class="i-lucide-chevron-left"></i>
+            </a>
+            {% endif %}
+        </div>
+    </nav>
+    {% else %}
+    <div class="flex flex-col gap-y-4 items-center justify-center text-text p-3">
+        <div class="i-ic-outline-search-off size-24"></div>
+        <div class="text-2xl"> محصولی یافت نشد!</div>
+    </div>
+    {% endif %}
+</main>
+
+{% endblock%}

@@ -1,0 +1,485 @@
+{% load static %}
+{% load humanize %}
+
+<header class="fixed inset-x-0 top-0 z-30 bg-muted">
+    <!-- Desktop -->
+    <div class="hidden lg:block">
+        <!-- Top -->
+        <div class="container relative z-30 flex items-center justify-between gap-6 bg-muted py-4">
+            <!-- Logo -->
+            <a href="{% url 'home_page' %}">
+                <img src="{{site_setting.site_logo.url}}" alt="{{site_setting.site_name}}" class="w-40" />
+            </a>
+            <!-- Search Wrapper -->
+            <div class="flex-grow">
+                <div class="relative">
+                    <form action="{% url 'search_page' %}" method="get" class="w-full">
+                        <div id="desktopSearchInputWrapper"
+                            class="group relative z-20 flex items-center overflow-hidden rounded-lg border bg-background pr-2 duration-150">
+                            <button type="submit">
+                                <div class="i-carbon-search h-6 w-6 text-text/60"></div>
+                            </button>
+                            <label for="desktopSearchInput" class="sr-only">header Search Label</label>
+                            <input id="desktopSearchInput" onfocus="desktopSearchFocus()"
+                                onkeyup="desktopSearchOnType(event)" type="text"
+                                placeholder="جستجو در {{site_setting.site_name}}" name="query"
+                                value="{{request.GET.query}}"
+                                class="h-12 w-full bg-transparent px-2 outline-none placeholder:text-sm placeholder:text-text/60 placeholder:duration-200 group-focus-within:placeholder:-translate-x-2" />
+
+                            <button id="desktopSearchClearButton" onclick="desktopSearchClearValue()"
+                                class="ml-2 hidden h-6 w-6 items-center justify-center rounded-lg border bg-muted p-px text-text/60 duration-200 hover:border-primary hover:bg-background">
+                                <span class="i-lucide-x h-4 w-4"></span>
+                            </button>
+                        </div>
+                    </form>
+                    <!-- Result Drop down -->
+                    <div id="desktopSearchResult"
+                        class="absolute left-0 top-16 z-20 hidden w-full space-y-8 rounded-lg bg-muted p-4">
+                        <!-- Brand Result -->
+                        <ul class="space-y-2">
+                            {% for brand in brands %}
+                            <li>
+                                <a href="{% url 'search_page' %}?query={{brand.name}}"
+                                    class="flex items-center gap-2 py-2 duration-200 hover:text-primary">
+                                    برند {{brand.name}}
+                                    <span class="i-ic-outline-arrow-outward"></span>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        <!-- Search History-->
+                        {% if recent_searches %}
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-6">
+                                <div>جستجوهای اخیر شما</div>
+                                <a href="{% url 'clear_search_page' %}"
+                                    class="flex items-center gap-2 text-sm text-warning duration-200 hover:text-warning/80">
+                                    حذف همه
+                                    <i class="i-lucide-trash size-5"></i>
+                                </a>
+                            </div>
+
+                            <div class="flex flex-wrap gap-4 pt-3">
+                                {% for search in recent_searches %}
+                                <a href="{% url 'search_page' %}?query={{search}}"
+                                    class="rounded-2xl border px-2 py-1 text-sm text-text/80 duration-200 hover:bg-background">
+                                    {{search}}
+                                </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div onclick="desktopSearchUnFocus()" id="desktopSearchResultOverlay" class="relative z-10 hidden">
+                    <div class="fixed inset-0 bg-black/40"></div>
+                </div>
+            </div>
+
+            <!-- Account, Cart, Theme -->
+            <div class="flex items-center gap-2">
+                {% if request.user.is_authenticated %}
+                <!-- Account Logged in -->
+                <div>
+                    <button type="button" data-dropdown-toggle="desktopAccountDropdown" class="icon-btn h-10 w-10">
+                        <div class="i-lucide-user-round h-6 w-6"></div>
+                    </button>
+
+                    <!-- Dropdown menu -->
+                    <div id="desktopAccountDropdown" class="z-10 hidden w-60 rounded-lg border bg-muted shadow">
+                        <ul class="flex flex-col justify-between divide-y">
+                            <!-- user -->
+                            <li class="group">
+                                <a href="{% url 'dashboard_page' %}"
+                                    class="flex items-center justify-between px-5 py-4 transition-all group-hover:text-primary">
+                                    <div class="flex items-center gap-x-3">
+                                        <img class="h-8 w-8" src="{% static 'images/user.webp' %}" alt="Profile" />
+                                        <p class="w-32 overflow-hidden font-semibold">
+                                            {{request.user.username}}
+                                        </p>
+                                    </div>
+                                    <div class="i-lucide-chevron-left min-w-fit text-text/60 group-hover:text-primary">
+                                    </div>
+                                </a>
+                            </li>
+                            <!-- order -->
+                            <li class="group">
+                                <a href="{% url 'dashboard_orders_page' %}"
+                                    class="flex items-center justify-between px-5 py-4 transition-all group-hover:text-primary">
+                                    <div class="flex items-center gap-x-3">
+                                        <svg
+                                            class="i-mingcute-shopping-bag-3-line h-6 w-6 text-text/70 group-hover:text-primary"></svg>
+                                        <p>سفارش ها</p>
+                                    </div>
+                                    <svg class="i-lucide-chevron-left text-text/60 group-hover:text-primary"></svg>
+                                </a>
+                            </li>
+                            <!-- favorite -->
+                            <li class="group">
+                                <a href="{% url 'dashboard_favorites_page' %}"
+                                    class="flex items-center justify-between px-5 py-4 transition-all group-hover:text-primary">
+                                    <div class="flex items-center gap-x-3">
+                                        <svg
+                                            class="i-ic-baseline-favorite-border h-6 w-6 text-text/70 group-hover:text-primary"></svg>
+                                        <p>علاقه‌مندی ها</p>
+                                    </div>
+                                    <svg class="i-lucide-chevron-left text-text/60 group-hover:text-primary"></svg>
+                                </a>
+                            </li>
+                            <!-- exit -->
+                            <li>
+                                <a href="{% url 'logout_page' %}"
+                                    class="my-1 flex items-center justify-between px-5 py-3 text-warning duration-150 hover:bg-warning/10">
+                                    <div class="flex items-center gap-x-3">
+                                        <svg class="i-mingcute-exit-line h-6 w-6"></svg>
+                                        <p>خروج</p>
+                                    </div>
+                                    <svg class="i-lucide-chevron-left"></svg>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                {% else %}
+                <!-- Account Logged out -->
+                <div>
+                    <a href="{% url 'login_page' %}"
+                        class="h-10 flex items-center gap-2 border px-4 rounded-lg text-text/80 hover:bg-background duration-200 ">
+                        <div class="i-lucide-user-round w-6 h-6"></div>
+                        ورود \ ثبت نام
+                    </a>
+                </div>
+                {% endif %}
+
+                {% if request.user.is_authenticated %}
+                <!-- Cart -->
+                <div>
+                    <button data-dropdown-toggle="desktopShoppingDropdown"
+                        class="icon-btn relative h-10 w-10 border-primary">
+                        <span class="i-lucide-shopping-cart h-6 w-6"></span>
+                        <span
+                            class="absolute -right-1.5 -top-2.5 h-5 w-5 items-center justify-center rounded-full bg-primary-btn text-center text-sm leading-6 text-white">
+                            {{cart.orders.count}}
+                        </span>
+                    </button>
+
+                    <!-- Dropdown Shopping -->
+
+                    <div id="desktopShoppingDropdown"
+                        class="left-10 z-10 !ml-5 hidden w-[420px] rounded-lg border bg-muted shadow">
+                        <div class="flex flex-col justify-between text-sm">
+                            <!-- header -->
+                            <div class="flex justify-between px-5 py-4">
+                                <div>{{cart.orders.count}} مورد</div>
+                                <a href="{% url 'cart_page' %}"
+                                    class="flex items-center text-primary duration-200 hover:text-primary/80">
+                                    <p>مشاهده سبد خرید</p>
+                                    <div class="i-lucide-chevron-left"></div>
+                                </a>
+                            </div>
+                            <!-- Products -->
+                            <ul class="max-h-60 divide-y overflow-y-auto p-5">
+                                {% if cart.orders.exists %}
+                                {% for order in cart.orders.all %}
+                                <li class="flex gap-x-3 pb-5 pt-8">
+                                    <!-- Image -->
+                                    <div class="relative min-w-fit">
+                                        <a href="{% url 'remove_order_page' %}?order_id={{order.id}}"
+                                            class="absolute -top-2 right-0 rounded-lg border bg-muted duration-200 hover:bg-background">
+                                            <div class="i-lucide-trash m-2 h-4 w-4 text-warning"></div>
+                                        </a>
+                                        <a href="{% url 'product_detail_page' order.product.slug %}">
+                                            <img class="h-[120px] w-[120px] rounded-2xl"
+                                                src="{{order.product.image.url}}" alt="Blesser" />
+                                        </a>
+                                    </div>
+                                    <!-- Information -->
+                                    <div class="flex w-full flex-col">
+                                        <a href="{% url 'product_detail_page' order.product.slug %}"
+                                            class="line-clamp-2 h-10">
+                                            {{order.product.name}}
+                                        </a>
+                                        <div class="flex items-center gap-x-4 pt-3 text-text/80">
+                                            <p>تعداد : {{order.count}}</p>
+                                            <div class="h-3 w-0.5 bg-secondary"></div>
+                                            {% if order.color %}
+                                            <p>رنگ : {{order.color}}</p>
+                                            {% endif %}
+                                        </div>
+                                        <div class="flex items-center justify-between gap-x-5 py-3">
+                                            <!-- price -->
+                                            <div class="flex items-center gap-x-2">
+                                                <div class="text-lg font-medium text-primary">
+                                                    {% if order.product.is_sale %}
+                                                    {{order.product.sale_price|intcomma}}
+                                                    {% else %}
+                                                    {{order.product.price|intcomma}}
+                                                    {% endif %}
+                                                </div>
+                                                <p class="text-sm text-primary">تومان</p>
+                                            </div>
+                                            <!-- Quantity -->
+
+                                            <div
+                                                class="flex h-10 w-24 items-center justify-between rounded-lg border px-2 py-1">
+                                                <a href="{% url 'change_order_count_page' %}?state=increase&slug={{order.product.slug}}&color_id={{order.color.id}}"
+                                                    type="button" class="i-lucide-plus size-8 text-success"></a>
+                                                <input value="{{order.count}}" disabled="" type="number"
+                                                    class="flex h-5 w-full grow select-none items-center justify-center bg-transparent text-center text-sm outline-none" />
+                                                <a href="{% url 'change_order_count_page' %}?state=decrease&slug={{order.product.slug}}&color_id={{order.color.id}}"
+                                                    type="button" class="i-lucide-minus size-8 text-warning"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                                {% else %}
+                                <li>سبد خرید شما خالی میباشد</li>
+                                {% endif %}
+                            </ul>
+                            <!-- footer -->
+                            <div class="flex items-center justify-between border-t p-5">
+                                <div class="flex flex-col items-center">
+                                    <p class="text-text/60">مبلغ قابل پرداخت</p>
+                                    <div class="flex items-center gap-x-1 text-primary">
+                                        <p class="text-lg font-bold">{{cart.get_total_amount|intcomma}}</p>
+                                        <p class="text-sm">تومان</p>
+                                    </div>
+                                </div>
+                                <a href="{% url 'cart_shipping_page' %}">
+                                    <button
+                                        class="w-32 rounded-md bg-primary-btn py-3 text-white duration-200 hover:bg-primary-btn/80">
+                                        ثبت سفارش
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <!-- Theme -->
+                <div>
+                    <button onclick="toggleDark(event)" class="icon-btn h-10 w-10">
+                        <div class="i-carbon-moon !h-6 !w-6 dark:i-carbon-sun"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom -->
+        <div data-onscrollclass="-translate-y-full"
+            class="absolute inset-x-0 top-full z-20 bg-muted transition-transform duration-300">
+            <nav class="container flex items-center gap-2 text-text/80">
+                <!-- indicator -->
+                <div id="line"
+                    class="absolute bottom-0 end-0 top-full h-1 rounded-xl bg-primary transition-all duration-300">
+                </div>
+                <!-- Mega Menu -->
+                <ul class="desktop-nav-item relative z-10" onmouseenter="desktopMegamenuShow()"
+                    onmouseleave="desktopMegamenuHidden()">
+                    <!-- category-->
+                    <div class="flex cursor-pointer items-center gap-2 pb-2 pl-2">
+                        <div class="i-lucide-align-justify h-4 w-4"></div>
+                        <div><a>دسته بندی‌ها</a></div>
+                    </div>
+
+                    <div id="desktop-mega-menu"
+                        class="absolute right-0 top-full hidden h-[400px] w-[900px] overflow-hidden rounded-b-lg bg-muted">
+                        <!-- menu -->
+                        <div class="flex">
+                            <!-- right Menu -->
+                            <div dir="ltr"
+                                class="max-h-[400px] min-h-[400px] min-w-[200px] overflow-y-auto bg-background">
+                                <ul id="desktopMegamenuCategory" dir="rtl" class="flex flex-col">
+                                    {% for category in categories %}
+                                    {% if not category.parent %}
+                                    <li>
+                                        <a href="{% url 'filter_products_page' %}?category={{category.id}}"
+                                            class="mega-menu-link">{{category.name}}</a>
+                                    </li>
+                                    {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+
+                            <!-- left Menu -->
+                            <div dir="ltr" class="max-h-[400px] min-h-[400px] overflow-y-auto p-6">
+                                <div dir="rtl" id="desktopMegamenuSubCategory">
+                                    {% for category in categories %}
+                                    <!-- man menu -->
+                                    <div class="hidden">
+                                        <div class="mb-6">
+                                            <a href="{% url 'filter_products_page' %}?category={{category.id}}"
+                                                class="flex items-center gap-x-1 text-sm text-primary duration-200 hover:text-primary/80">
+                                                <span>مشاهده همه</span>
+                                                <i class="i-lucide-chevron-left"></i>
+                                            </a>
+                                        </div>
+
+                                        <div class="flex flex-wrap gap-x-14 gap-y-8">
+                                            <!-- man menu 1 -->
+                                            {% for child in category.children.all %}
+                                            <ul class="flex flex-col space-y-4">
+                                                <li>
+                                                    <a href="{% url 'filter_products_page' %}?category={{child.id}}"
+                                                        class="block flex items-center gap-x-2 duration-200 hover:text-primary">
+                                                        <span class="h-5 w-0.5 rounded-full bg-primary"></span>
+                                                        <span>{{child.name}}</span>
+                                                        <i class="i-lucide-chevron-left text-sm"></i>
+                                                    </a>
+                                                </li>
+                                                {% for brand in brands %}
+                                                <li>
+                                                    <a href="{% url 'filter_products_page' %}?category={{child.id}}&brand={{brand.id}}" class="block text-sm duration-200 hover:text-primary">
+                                                        {{brand.name}}</a>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ul>
+
+                <ul class="desktop-nav-item">
+                    <a href="{% url 'categories_page' %}" class="inline-block px-2 pb-2">
+                        محصولات
+                    </a>
+                </ul>
+                <ul class="desktop-nav-item" data-color="hsl(var(--warning))">
+                    <a href="{% url 'special_sale_page' %}" class="inline-block px-2 pb-2">
+                        فروش ویژه
+                    </a>
+                </ul>
+                <ul class="desktop-nav-item z-10">
+                    <div class="group relative">
+                        <div class="flex cursor-pointer gap-2 px-2 pb-2">
+                            سایر
+                            <div class="text-primary">...</div>
+                        </div>
+                        <!-- Dropdown -->
+                        <div class="absolute right-0 top-full hidden w-40 rounded-b-lg bg-muted group-hover:block">
+                            <ul class="space-y-2">
+                                <li>
+                                    <a href="{% url 'contact_us_page' %}"
+                                        class="z-10 block rounded-lg px-4 py-3 duration-200 hover:text-primary">
+                                        تماس با ما
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'about_page' %}"
+                                        class="z-10 block rounded-lg px-4 py-3 duration-200 hover:text-primary">
+                                        درباره ما
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </ul>
+
+                <!-- Indicator -->
+                <div id="desktopNavbarIndicator"
+                    class="absolute bottom-0 end-0 z-0 h-[0.15625rem] w-0 touch-none rounded-full bg-primary transition-all duration-300 ease-[ease]">
+                </div>
+            </nav>
+        </div>
+    </div>
+    <!-- Mobile-->
+    <div class="block lg:hidden">
+        <!-- Top -->
+        <div id="headerMobileTop"
+            class="container relative inset-x-0 z-30 bg-muted pb-4 pt-2 transition-transform duration-300">
+            <div class="flex items-center justify-between">
+                <!-- Image -->
+                <a href="{% url 'home_page' %}">
+                    <img class="h-6" src="{{site_setting.site_logo.url}}" alt="{{site_setting.site_name}}" />
+                </a>
+                <!-- Theme -->
+                <div>
+                    <button onclick="toggleDark(event)" class="icon-btn h-10 w-10">
+                        <div class="i-carbon-moon !h-6 !w-6 dark:i-carbon-sun"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom -->
+        <div class="px-3">
+            <div id="headerMobileNavigation" data-onscrollclass="-translate-y-full"
+                class="absolute inset-x-0 top-full flex-grow bg-muted pb-1.5 transition-all duration-200">
+                <div>
+                    <div class="container flex items-center">
+                        <div onclick="mobileSearchUnFocus()" id="headerMobileSearchCloseIcon"
+                            class="i-lucide-arrow-right h-0 w-0 text-text/80 duration-200"></div>
+                        <form action="{% url 'search_page' %}" method="get" class="w-full">
+                            <div
+                                class="group flex w-full items-center overflow-hidden rounded-lg border bg-background pr-2 duration-200 focus-within:border-primary">
+                                <button type="submit">
+                                    <div class="i-carbon-search h-6 w-6 text-text/60"></div>
+                                </button>
+                                <label for="mobileSearchInput" class="sr-only">Mobile Search</label>
+                                <input id="mobileSearchInput" type="text" autocomplete="off"
+                                    onkeyup="mobileSearchOnType(event)" onfocus="mobileSearchOnFocus()"
+                                    placeholder="جستجو در {{site_setting.site_name}}" name="query"
+                                    value="{{request.GET.query}}"
+                                    class="duration-400 h-10 w-full bg-transparent px-2 outline-none placeholder:text-sm placeholder:duration-200 focus:placeholder:-translate-x-2" />
+                                <button id="mobileSearchClearButton" onclick="mobileSearchClearValue()"
+                                    class="ml-2 hidden h-6 w-6 items-center justify-center rounded-lg border bg-background p-px text-text/60">
+                                    <span class="i-lucide-x h-4 w-4"></span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Search Result -->
+        <div id="headerMobileSearchResult" class="relative z-40 hidden px-3">
+            <div class="fixed inset-0 mt-[64px] h-[calc(100dvh-64px)] bg-muted">
+                <div class="h-full space-y-6 overflow-y-auto p-5">
+                    <!-- Brand Result -->
+                    <ul class="space-y-2">
+                        {% for brand in brands %}
+                        <li>
+                            <a href="{% url 'search_page' %}?query={{brand.name}}"
+                                class="flex items-center gap-2 py-2 duration-200 hover:text-primary">
+                                برند {{brand.name}}
+                                <span class="i-ic-outline-arrow-outward"></span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <!-- User Recent Search -->
+                    {% if recent_searches %}
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <div>جستجوهای اخیر شما</div>
+                            <a href="{% url 'clear_search_page' %}" class="flex items-center gap-2 text-sm text-warning duration-200 hover:text-warning/80">
+                                حذف همه
+                                <i class="i-lucide-trash size-5"></i>
+                            </a>
+                        </div>
+
+                        <div class="flex flex-wrap gap-4 pt-3">
+                            {% for search in recent_searches %}
+                            <a href="{% url 'search_page' %}?query={{search}}"
+                                class="rounded-2xl border px-2 py-1 text-sm text-text/80 duration-200 hover:bg-background">
+                                {{search}}
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- Mega menu Overlay -->
+<div id="desktop-mega-menu-overlay" class="fixed inset-0 z-20 hidden bg-black/40 backdrop-blur-md"></div>

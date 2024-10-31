@@ -1,0 +1,29 @@
+{% load static %}
+
+<!doctype html>
+<html lang="fa-IR" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="{% static 'css/fonts.css' %}" />
+
+    <link rel="stylesheet" href="{% static 'css/app.css' %}" />
+    
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+
+    <title>بزودی برمیگردیم</title>
+</head>
+
+<body>
+    <div
+        class="bg-dot-rgba(1,1,1,0.1) dark:bg-dot-rgba(254,254,255,0.1) flex min-h-screen items-center justify-center bg-muted">
+        <div class="container flex flex-col items-center justify-center gap-y-8">
+            <img src="{% static 'images/maintenance.svg' %}" alt="maintenance" class="w-[400px] rounded-full" />
+            <div class="text-3xl">بزودی برمیگردیم</div>
+        </div>
+    </div>
+</body>
+
+</html>
