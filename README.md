@@ -1,4 +1,4 @@
-# Django mvt e commerce
+# Django mvt E-Shop
 
 ### Secure and tested
 ### Fast and using celery system
