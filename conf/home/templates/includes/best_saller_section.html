@@ -1,0 +1,61 @@
+{% load humanize %}
+
+{% if best_seller_products.exists %}
+<!-- Best Seller Section -->
+<section class="container py-10">
+    <div class="mb-6 flex items-center justify-between gap-x-6 text-nowrap">
+        <h4 class="font-semiBold lg:text-xl">پرفروش ترین ها</h4>
+        <div class="h-0.25 w-full bg-secondary"></div>
+    </div>
+
+    <div>
+        <div class="swiper product-slider !px-px pt-4">
+            <div class="swiper-wrapper py-px">
+                <!-- product -->
+                {% for best_seller_product in best_seller_products %}
+                <div class="swiper-slide">
+                    <div
+                        class="border-gradient relative rounded-[--product-card-radius] p-px [--product-card-radius:theme(borderRadius.2xl)] before:absolute before:-inset-px before:h-[calc(100%+2px)] before:w-[calc(100%+2px)] before:rounded-[--product-card-radius] before:content-['']">
+                        <a href="{% url 'product_detail_page' best_seller_product.slug %}"
+                            class="relative block overflow-hidden rounded-[calc(var(--product-card-radius)-1px)] bg-muted">
+                            <div class="mb-4 bg-secondary p-2 lg:p-4">
+                                <!-- Special Sale Percentage  -->
+                                {% if best_seller_product.is_sale %}
+                                <div
+                                    class="absolute right-2 top-0 rounded-b-full bg-warning px-1 py-1.5 text-center text-sm font-medium text-white md:text-base">
+                                    Off
+                                </div>
+                                {% endif %}
+                                <!-- Image -->
+                                <img src="{{best_seller_product.image.url}}" alt="{{best_seller_product.name}}"
+                                    class="aspect-[1/1] w-full rounded-xl object-cover" />
+                            </div>
+                            <div class="mb-1 px-2 lg:px-4">
+                                <p class="line-clamp-2 h-10 text-sm xs:h-12 xs:text-base">
+                                    {{best_seller_product.name}}
+                                </p>
+
+                                <div class="gap-x-1 text-end font-bold text-primary">
+                                    {% if best_seller_product.is_sale%}
+                                    <div class="h-5 text-end text-sm text-text/50 xs:text-base">
+                                        <del>{{best_seller_product.price|intcomma}}</del>
+                                    </div>
+
+                                    <span class="text-sm xs:text-base">{{best_seller_product.sale_price|intcomma}}</span>
+                                    <span class="text-sm font-light">تومان</span>
+                                    {% else %}
+                                    <span class="text-sm xs:text-base">{{best_seller_product.price|intcomma}}</span>
+                                    <span class="text-sm font-light">تومان</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="h-8 px-2 lg:px-4"></div>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}

@@ -1,0 +1,56 @@
+{% extends 'shared/base.html' %}
+{% load render_partial %}
+{% block page_title %}پیام ها{% endblock %}
+
+{% block content %}
+<main class="flex-grow bg-background pt-[106px]">
+    <div class="container grid grid-cols-12 gap-4 pb-28 pt-10 lg:pb-10">
+        <!-- Sidebar -->
+        {% render_partial 'dashboard.views.DashboardSidebarPartialView' %}
+        <!-- Content -->
+        <div class="col-span-12 lg:col-span-9">
+            <div class="rounded-lg bg-muted shadow">
+                <div class="py-5">
+                    <div class="mb-8 flex justify-between px-5">
+                        <h1 class="relative w-fit font-medium lg:text-lg">
+                            پیام های شما
+                            <span
+                                class="absolute right-0 top-10 h-[3px] w-full animate-fill-border rounded-full bg-primary"></span>
+                        </h1>
+                        {% if messages.exists %}
+                        <a href="{% url 'dashboard_delete_messages_page' %}" class="btn-warning px-4 py-1.5">حذف همه</a>
+                        {% endif %}
+                    </div>
+                    {% if messages.exists %}
+                    <ul class="space-y-4 divide-y">
+                        <!-- item -->
+                        {% for message in messages %}
+                        <li class="px-5 py-6">
+                            <!-- Title -->
+                            <div class="mb-4 flex items-center gap-x-2 text-primary">
+                                <div class="i-lucide-bell size-6"></div>
+                                <p class="md:text-lg">
+                                    {{message.title}}
+                                </p>
+                            </div>
+                            <p class="mb-4 text-sm text-text/90 md:text-base">
+                                {{message.message}}
+                            </p>
+                            <p>{{message.date}}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <div class="flex justify-center">
+                        <div class="flex flex-col items-center justify-center gap-y-4 text-text/60">
+                            <div class="i-lucide-bell-off size-20"></div>
+                            <p class="md:text-lg">لیست پیام های شما خالی میباشد</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

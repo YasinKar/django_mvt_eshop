@@ -1,0 +1,179 @@
+{% extends 'shared/base.html' %}
+{% block page_title %}تماس با ما{% endblock %}
+{% block meta_description %}فروشگاه {{site_setting.site_name}} | صفحه تماس با ما{% endblock %}
+
+{% block content%}
+<main class="flex-grow bg-background pt-[106px]">
+    <div class="container pt-10">
+        <div class="relative mx-auto max-w-[1000px] overflow-hidden rounded-lg border py-16">
+            <!-- Background -->
+            <div
+                class="pointer-events-none absolute inset-0 flex w-screen items-center justify-center overflow-hidden [mask-image:radial-gradient(transparent_15%,white)]">
+                <svg class="absolute left-0 top-0 h-full w-full stroke-black/80 stroke-[2] [mask-image:linear-gradient(transparent_5%,white,transparent_85%)] dark:stroke-white/60"
+                    data-n-ids='{"1a4MN34vH0:0":"1a4MN34vH0:0"}'>
+                    <rect width="100%" height="100%" stroke-width="0" fill="url(#grid-pattern-1a4MN34vH0:0)"></rect>
+                    <svg>
+                        <rect stroke-width="0" width="95" height="95" x="97" y="97"
+                            class="pointer-events-auto fill-black/5 transition duration-500 hover:fill-black/10 dark:fill-white/5 dark:hover:fill-white/10">
+                        </rect>
+                        <rect stroke-width="0" width="95" height="95" x="385" y="193"
+                            class="pointer-events-auto fill-black/5 transition duration-500 hover:fill-black/10 dark:fill-white/5 dark:hover:fill-white/10">
+                        </rect>
+                        <rect stroke-width="0" width="95" height="95" x="193" y="289"
+                            class="pointer-events-auto fill-black/5 transition duration-500 hover:fill-black/10 dark:fill-white/5 dark:hover:fill-white/10">
+                        </rect>
+                        <rect stroke-width="0" width="95" height="95" x="673" y="289"
+                            class="pointer-events-auto fill-black/5 transition duration-500 hover:fill-black/10 dark:fill-white/5 dark:hover:fill-white/10">
+                        </rect>
+                        <rect stroke-width="0" width="95" height="95" x="481" y="385"
+                            class="pointer-events-auto fill-black/5 transition duration-500 hover:fill-black/10 dark:fill-white/5 dark:hover:fill-white/10">
+                        </rect>
+                        <rect stroke-width="0" width="95" height="95" x="1249" y="97"
+                            class="pointer-events-auto fill-black/5 transition duration-500 hover:fill-black/10 dark:fill-white/5 dark:hover:fill-white/10">
+                        </rect>
+                        <rect stroke-width="0" width="95" height="95" x="1" y="481"
+                            class="pointer-events-auto fill-black/5 transition duration-500 hover:fill-black/10 dark:fill-white/5 dark:hover:fill-white/10">
+                        </rect>
+                        <rect stroke-width="0" width="95" height="95" x="577" y="481"
+                            class="pointer-events-auto fill-black/5 transition duration-500 hover:fill-black/10 dark:fill-white/5 dark:hover:fill-white/10">
+                        </rect>
+                        <rect stroke-width="0" width="95" height="95" x="1441" y="385"
+                            class="pointer-events-auto fill-black/5 transition duration-500 hover:fill-black/10 dark:fill-white/5 dark:hover:fill-white/10">
+                        </rect>
+                        <rect stroke-width="0" width="95" height="95" x="1057" y="289"
+                            class="pointer-events-auto fill-black/5 transition duration-500 hover:fill-black/10 dark:fill-white/5 dark:hover:fill-white/10">
+                        </rect>
+                        <rect stroke-width="0" width="95" height="95" x="961" y="481"
+                            class="pointer-events-auto fill-black/5 transition duration-500 hover:fill-black/10 dark:fill-white/5 dark:hover:fill-white/10">
+                        </rect>
+                        <rect stroke-width="0" width="95" height="95" x="1249" y="577"
+                            class="pointer-events-auto fill-black/5 transition duration-500 hover:fill-black/10 dark:fill-white/5 dark:hover:fill-white/10">
+                        </rect>
+                    </svg>
+                    <defs>
+                        <pattern id="grid-pattern-1a4MN34vH0:0" viewBox="0 0 64 64" width="96" height="96"
+                            patternUnits="userSpaceOnUse">
+                            <path d="M64 0H0V64" fill="none"></path>
+                        </pattern>
+                    </defs>
+                </svg>
+            </div>
+
+            <div class="relative grid grid-cols-5 gap-10 lg:gap-4">
+                <div class="col-span-5 flex justify-center">
+                    <h1 class="relative col-span-5 text-center text-xl font-medium lg:hidden">
+                        تماس با ما
+                        <span
+                            class="absolute right-0 top-10 h-[3px] w-full animate-fill-border rounded-full bg-primary"></span>
+                    </h1>
+                </div>
+
+                <!-- Form -->
+                <div class="col-span-5 border-b border-t bg-muted px-6 py-10 lg:col-span-3 lg:rounded-l lg:border-l">
+                    <form method="post" class="grid grid-cols-2 gap-2" action="{% url 'contact_us_page' %}">
+                        {% csrf_token %}
+                        <!-- Phone -->
+                        <div class="col-span-2 lg:col-span-1">
+                            <label for="{{ form.phone.id_for_label }}" class="sr-only"> شماره موبایل </label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                            <div class="h-5 text-sm text-warning">
+                                {% for error in form.phone.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="h-5"></div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Subject -->
+                        <div class="col-span-2 lg:col-span-1">
+                            <label for="{{ form.title.id_for_label }}" class="sr-only"> عنوان </label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                            <div class="h-5 text-sm text-warning">
+                                {% for error in form.title.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="h-5"></div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Message -->
+                        <div class="col-span-2">
+                            <label for="{{ form.message.id_for_label }}" class="sr-only"> پیام </label>
+                            {{ form.message }}
+                            {% if form.message.errors %}
+                            <div class="h-5 text-sm text-warning">
+                                {% for error in form.message.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="h-5"></div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-span-2">
+                            <div class="flex flex-col items-center justify-between gap-10 sm:flex-row">
+                                <div class="text-sm text-text/60">
+                                    با ارسال این، تأیید می کنم که
+                                    <a href="{% url 'rules_page' %}" class="text-primary hover:underline">
+                                        قوانین و مقررات
+                                    </a>
+                                    را خوانده ام.
+                                </div>
+                                <button type="submit" class="btn-primary rounded-full px-6 py-2">
+                                    ارسال پیام
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Text -->
+                <div class="col-span-5 px-4 lg:col-span-2">
+                    <div class="flex justify-center">
+                        <h1 class="relative mb-6 hidden w-fit text-xl font-medium lg:block">
+                            تماس با ما
+                            <span
+                                class="absolute right-0 top-10 h-[3px] w-full animate-fill-border rounded-full bg-primary"></span>
+                        </h1>
+                    </div>
+                    <ul class="space-y-6">
+                        <li>
+                            <!-- Email -->
+                            <div class="flex flex-col gap-y-4">
+                                <p class="text-text/90">آدرس ایمیل</p>
+                                <a class="text-primary">{{site_setting.email}}</a>
+                            </div>
+                        </li>
+
+                        <li>
+                            <!-- phone -->
+                            <div class="flex flex-col gap-y-4">
+                                <p class="text-text/90">تلفن پشتیبانی</p>
+                                <a dir="ltr" class="text-primary">
+                                    {{site_setting.phone}}
+                                </a>
+                            </div>
+                        </li>
+                        <li>
+                            <!-- phone -->
+                            <div class="flex flex-col gap-y-4">
+                                <p class="min-w-fit text-text/90">آدرس</p>
+                                <a class="text-primary">
+                                    {{site_setting.adress}}
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock%}

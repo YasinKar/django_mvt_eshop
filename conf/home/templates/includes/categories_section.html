@@ -1,0 +1,30 @@
+{% load static %}
+
+<!-- Category Section -->
+<section class="container py-10">
+    <div class="mb-10 text-center text-lg font-medium lg:text-xl">
+        خرید بر اساس دسته بندی
+    </div>
+
+    <div class="flex flex-col items-center justify-center">
+        <div class="flex w-full flex-wrap items-center justify-center gap-8">
+            {% for category in categories %}
+            <div class="h-40 w-28">
+                <a class="flex w-full select-none flex-col items-center"
+                    href="{% url 'filter_products_page' %}?category={{category.id}}">
+                    {% if category.image %}
+                    <img class="rounded-full mx-auto inline-block h-25 h-full w-25 w-full object-contain"
+                        src="{{category.image.url}}" alt="{{category.name}}" />
+                    {% else %}
+                    <img class="rounded-full mx-auto inline-block h-25 h-full w-25 w-full object-contain"
+                        src="{% static 'images/categories.png' %}" alt="{{category.name}}" />
+                    {% endif %}
+
+
+                    <p class="mt-2 line-clamp-2 text-center">{{category.name}}</p>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

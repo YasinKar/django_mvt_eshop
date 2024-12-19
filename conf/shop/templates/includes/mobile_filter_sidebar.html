@@ -1,0 +1,214 @@
+<div id="filter-drawer"
+    class="fixed inset-x-0 bottom-0 z-40 w-full translate-y-full overflow-y-auto rounded-t-xl border-t bg-muted transition-transform duration-500"
+    tabindex="-1" aria-labelledby="filter-drawer">
+    <div class="flex h-full flex-col gap-4">
+        <div class="flex items-center justify-between p-4">
+            <div class="text-lg font-medium">فیلترها</div>
+            <a href="{% url 'filter_products_page' %}" class="text-sm text-primary disabled:text-text/60">
+                لغو فیلترها
+            </a>
+        </div>
+        <form action="{% url 'filter_products_page' %}" method="get">
+            <!-- Filters -->
+            <div class="grow overflow-y-auto">
+                <ul class="divide-y">
+                    <li>
+                        <label class="flex cursor-pointer items-center justify-between px-4 py-5"
+                            for="onlySpecialMobile">
+                            <div>فقط کالا های فروش ویژه</div>
+                            <div class="relative inline-flex cursor-pointer items-center">
+                                <input class="peer sr-only" id="onlySpecialMobile" type="checkbox" name="is_sale" 
+                                {% if request.GET.is_sale == 'True' %}checked{% endif %} />
+
+                                <div
+                                    class="peer h-6 w-11 rounded-full bg-background after:absolute after:left-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:bg-muted after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full">
+                                </div>
+                            </div>
+                        </label>
+                    </li>
+
+                    <li>
+                        <input type="hidden" name="min_price" id="min-price-input" value="{{request.GET.min_price}}">
+                        <input type="hidden" name="max_price" id="max-price-input" value="{{request.GET.max_price}}">
+                        <div class="relative rounded-lg bg-muted" data-accordion-item>
+                            <button type="button" class="w-full px-4 py-5 text-right md:px-6 md:py-5"
+                                data-accordion-button>
+                                <div class="flex items-center justify-between gap-2 text-sm md:text-base">
+                                    <span> محدوده قیمت </span>
+                                    <div class="min-w-fit">
+                                        <span class="i-lucide-chevron-left duration-300" data-accordion-chevron></span>
+                                    </div>
+                                </div>
+                            </button>
+                            <div class="relative max-h-0 overflow-hidden transition-all duration-300"
+                                data-accordion-content>
+                                <div class="space-y-4 p-4">
+                                    <div data-id="shop-price-slider"></div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="text-primary">
+                                            <span class="text-xs font-bold xl:text-sm" data-id="shop-price-slider-min">
+                                            </span>
+                                            <span class="text-sm">تومان</span>
+                                        </div>
+                                        <div class="text-primary">
+                                            <span class="text-xs font-bold xl:text-sm" data-id="shop-price-slider-max">
+                                            </span>
+                                            <span class="text-sm">تومان</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="relative rounded-lg bg-muted" data-accordion-item>
+                            <button type="button" class="w-full px-4 py-5 text-right md:px-6 md:py-5"
+                                data-accordion-button>
+                                <div class="flex items-center justify-between gap-2 text-sm md:text-base">
+                                    <span> برند ها </span>
+                                    <div class="min-w-fit">
+                                        <span class="i-lucide-chevron-left duration-300" data-accordion-chevron></span>
+                                    </div>
+                                </div>
+                            </button>
+                            <div class="relative max-h-0 overflow-hidden transition-all duration-300"
+                                data-accordion-content>
+                                <div data-search-item-input-wrapper class="mb-4 px-4">
+                                    <input
+                                        class="w-full rounded-lg border bg-transparent px-4 py-2 outline-none duration-300 placeholder:duration-300 focus:border-primary focus:placeholder:-translate-x-2"
+                                        type="text" placeholder="جستجوی برند ..." />
+                                </div>
+                                <ul data-search-items class="max-h-40 space-y-2 overflow-y-auto py-3">
+                                    {% for brand in brands %}
+                                    <li>
+                                        <div class="inline-flex w-full items-center">
+                                            <label class="flex w-full cursor-pointer items-center gap-4 px-4 py-2"
+                                                for="checkbox-brand-1" data-ripple-dark="true">
+                                                <div class="relative flex items-center">
+                                                    <input name="brand" value="{{brand.id}}" type="checkbox"
+                                                        class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border transition-all before:absolute before:left-2/4 before:top-2/4 before:block before:h-12 before:w-12 before:-translate-x-2/4 before:-translate-y-2/4 before:rounded-full before:opacity-0 before:transition-opacity checked:border-primary-btn checked:bg-primary-btn checked:before:bg-primary-btn hover:before:opacity-10"
+                                                        id="checkbox-brand-1" />
+                                                    <div
+                                                        class="pointer-events-none absolute left-2/4 top-2/4 -translate-x-2/4 -translate-y-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
+                                                        <div class="i-lucide-check h-4 w-4 stroke-2"></div>
+                                                    </div>
+                                                </div>
+                                                <span data-searchable> {{brand.name}} </span>
+                                            </label>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="relative rounded-lg bg-muted" data-accordion-item>
+                            <button type="button" class="w-full px-4 py-5 text-right md:px-6 md:py-5"
+                                data-accordion-button>
+                                <div class="flex items-center justify-between gap-2 text-sm md:text-base">
+                                    <span> رنگ ها </span>
+                                    <div class="min-w-fit">
+                                        <span class="i-lucide-chevron-left duration-300" data-accordion-chevron></span>
+                                    </div>
+                                </div>
+                            </button>
+                            <div class="relative max-h-0 overflow-hidden transition-all duration-300"
+                                data-accordion-content>
+                                <div data-search-item-input-wrapper class="mb-4 px-4">
+                                    <input
+                                        class="w-full rounded-lg border bg-transparent px-4 py-2 outline-none duration-300 placeholder:duration-300 focus:border-primary focus:placeholder:-translate-x-2"
+                                        type="text" placeholder="جستجوی رنگ ..." />
+                                </div>
+                                <ul data-search-items class="max-h-40 space-y-2 overflow-y-auto py-3">
+                                    {% for color in colors %}
+                                    <li>
+                                        <div class="inline-flex w-full items-center">
+                                            <label class="flex w-full cursor-pointer items-center gap-4 px-4 py-2"
+                                                for="checkbox-color-1" data-ripple-dark="true">
+                                                <div class="relative flex items-center">
+                                                    <input name="color" value="{{color.id}}" type="checkbox"
+                                                        class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border transition-all before:absolute before:left-2/4 before:top-2/4 before:block before:h-12 before:w-12 before:-translate-x-2/4 before:-translate-y-2/4 before:rounded-full before:opacity-0 before:transition-opacity checked:border-primary-btn checked:bg-primary-btn checked:before:bg-primary-btn hover:before:opacity-10"
+                                                        id="checkbox-color-1" />
+                                                    <div
+                                                        class="pointer-events-none absolute left-2/4 top-2/4 -translate-x-2/4 -translate-y-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
+                                                        <div class="i-lucide-check h-4 w-4 stroke-2"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="flex w-full items-center justify-between">
+                                                    <span data-searchable> {{color.color}} </span>
+                                                    <span class="size-6 rounded-full border"
+                                                        style="background: {{color.color_code}}">
+                                                    </span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            {% if request.GET.category %}
+            <input type="hidden" name="category" value="{{ request.GET.category }}">
+            {% elif request.GET.ordering %}
+            <input type="hidden" name="ordering" value="{{ request.GET.ordering }}">
+            {% endif %}
+
+            <!-- Confirm -->
+            <div class="border-t p-4">
+                <button type="submit" data-drawer-hide="filter-drawer" class="btn-primary w-full py-2">
+                    اعمال فیلتر
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="sort-drawer"
+    class="fixed inset-x-0 bottom-0 z-40 w-full translate-y-full overflow-y-auto rounded-t-xl border-t bg-muted p-4 transition-transform duration-500"
+    tabindex="-1" aria-labelledby="filter-drawer">
+    <div>
+        <form action="{% url 'filter_products_page' %}" method="get">
+            <fieldset class="mb-4 flex flex-col space-y-2">
+                <legend class="sr-only">Sort</legend>
+                <div>
+                    <input id="sort-1" class="peer hidden" name="ordering" type="radio" value="newest" /><label
+                        class="relative block w-full cursor-pointer rounded-lg border p-4 text-text/95 transition-all duration-200 peer-checked:border-transparent peer-checked:bg-primary/15 peer-checked:text-primary"
+                        for="sort-1">
+                        <p class="text-center">جدید ترین</p>
+                    </label>
+                </div>
+                <div>
+                    <input id="sort-2" class="peer hidden" name="ordering" type="radio" value="expensive" /><label
+                        class="relative block w-full cursor-pointer rounded-lg border p-4 text-text/95 transition-all duration-200 peer-checked:border-transparent peer-checked:bg-primary/15 peer-checked:text-primary"
+                        for="sort-2">
+                        <p class="text-center">گران ترین</p>
+                    </label>
+                </div>
+                <div>
+                    <input id="sort-3" class="peer hidden" name="ordering" type="radio" value="inexpensive" /><label
+                        class="relative block w-full cursor-pointer rounded-lg border p-4 text-text/95 transition-all duration-200 peer-checked:border-transparent peer-checked:bg-primary/15 peer-checked:text-primary"
+                        for="sort-3">
+                        <p class="text-center">ارزان ترین</p>
+                    </label>
+                </div>
+            </fieldset>
+            
+            {% for key, value in request.GET.items %}
+            {% if key != 'ordering' %}
+            <input type="hidden" name="{{key}}" value="{{value}}">
+            {% endif %}
+            {% endfor %}
+
+            <button type="submit" data-drawer-hide="sort-drawer" class="btn-primary w-full py-2">
+                نمایش
+            </button>
+        </form>
+    </div>
+</div>

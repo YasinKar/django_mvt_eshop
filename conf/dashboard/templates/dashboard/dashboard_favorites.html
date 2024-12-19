@@ -1,0 +1,86 @@
+{% extends 'shared/base.html' %}
+{% load render_partial %}
+{% block page_title %}علاقه‌مندی ها{% endblock %}
+
+{% block content %}
+<main class="flex-grow bg-background pt-[106px]">
+    <div class="container grid grid-cols-12 gap-4 pb-28 pt-10 lg:pb-10">
+        <!-- Sidebar -->
+        {% render_partial 'dashboard.views.DashboardSidebarPartialView' %}
+        <!-- Content -->
+        <div class="col-span-12 lg:col-span-9">
+            <div class="rounded-lg bg-muted shadow">
+                <div class="py-5">
+                    <div class="mb-8 flex justify-between px-5">
+                        <h1 class="relative w-fit font-medium lg:text-lg">
+                            علاقه‌مندی های شما
+                            <span
+                                class="absolute right-0 top-10 h-[3px] w-full animate-fill-border rounded-full bg-primary"></span>
+                        </h1>
+                        {% if favorites.exists %}
+                        <a type="button" href="{% url 'remove_all_from_favorites_page' %}"
+                            class="btn-warning px-4 py-1.5">حذف همه</a>
+                        {% endif %}
+                    </div>
+                    {% if favorites.exists %}
+                    <div class="grid gap-2 xs:grid-cols-2 md:grid-cols-3">
+                        {% for favorite in favorites %}
+                        <div class="border border-transparent px-4 py-2 duration-200 hover:border-border">
+                            <div class="flex flex-col">
+                                <div class="mb-4 flex flex-col justify-center">
+                                    <a href="{% url 'product_detail_page' favorite.slug %}">
+                                        <img src="{{favorite.image.url}}" alt="{{favorite.name}}" loading="lazy"
+                                            class="mx-auto aspect-[1/1] w-50 rounded-lg object-cover"
+                                            draggable="false" />
+                                    </a>
+                                </div>
+                                <a href="{% url 'product_detail_page' favorite.slug %}"
+                                    class="mb-2 line-clamp-2 h-10 px-2 text-sm text-text/95 lg:h-12 lg:px-4 lg:text-base">کفش
+                                    {{favorite.name}}
+                                </a>
+                                <div class="flex flex-col px-2 lg:px-4">
+                                    <div class="flex justify-between">
+                                        <a href="{% url 'remove_from_favorites_page' %}?favorite_id={{favorite.id}}"
+                                            type="button"
+                                            class="flex h-10 w-10 items-center justify-center rounded-full bg-background text-warning transition-all duration-200 hover:bg-warning hover:text-white hover:dark:text-black">
+                                            <span class="i-lucide-trash size-5"></span>
+                                        </a>
+                                        <div>
+                                            {% if favorite.is_sale %}
+                                            <div class="h-5 text-left">
+                                                <del class="text-sm text-text/60 md:text-base">{{favorite.price}}
+                                                </del>
+                                            </div>
+                                            <div class="text-end text-sm font-bold text-primary md:text-base">
+                                                <span>{{favorite.sale_price}}</span><span
+                                                    class="mr-1 text-xs font-light md:text-sm">تومان</span>
+                                            </div>
+                                            {% else %}
+                                            <div class="text-end text-sm font-bold text-primary md:text-base">
+                                                <span>{{favorite.price}}</span><span
+                                                    class="mr-1 text-xs font-light md:text-sm">تومان</span>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="flex justify-center">
+                        <div class="flex flex-col items-center justify-center gap-y-4 text-text/60">
+                            <div class="i-lucide-heart-off size-20"></div>
+                            <p class="md:text-lg">
+                                لیست علاقه‌مندی های شما خالی میباشد
+                            </p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

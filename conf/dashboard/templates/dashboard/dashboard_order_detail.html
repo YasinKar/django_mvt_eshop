@@ -1,0 +1,158 @@
+{% extends 'shared/base.html' %}
+{% load render_partial %}
+{% load humanize %}
+{% block page_title %}جزئیات سفارش{% endblock %}
+
+{% block content %}
+<main class="flex-grow bg-background pt-[106px]">
+    <div class="container grid grid-cols-12 gap-4 pb-28 pt-10 lg:pb-10">
+        <!-- Sidebar -->
+        {% render_partial 'dashboard.views.DashboardSidebarPartialView' %}
+        <!-- Content -->
+        <div class="col-span-12 lg:col-span-9">
+            <div class="rounded-lg bg-muted shadow">
+                <div class="p-5">
+                    <div class="mb-16 flex justify-between">
+                        <h1 class="relative w-fit font-medium lg:text-lg">
+                            جزئیات سفارش {{order.id}}
+                            <span
+                                class="absolute right-0 top-10 h-[3px] w-full animate-fill-border rounded-full bg-primary"></span>
+                        </h1>
+                        <a href="{% url 'dashboard_orders_page' %}" class="btn-primary flex items-center gap-1 px-4 py-1.5">
+                            برگشت
+                            <span class="i-lucide-chevron-left size-5"></span>
+                        </a>
+                    </div>
+                    <div class="mb-8">
+                        <div class="block rounded-lg border p-4 shadow">
+                            <div class="flex items-center justify-between pb-6">
+                                {% if order.status == 'در حال پردازش' %}
+                                <div class="flex items-center gap-x-2 text-sky-500 dark:text-sky-400">
+                                    <p class="font-medium md:text-lg">در حال پردازش</p>
+                                </div>
+                                {% elif order.status == 'در حال تحویل' %}
+                                <div class="flex items-center gap-x-2 text-sky-500 dark:text-sky-400">
+                                    <p class="font-medium md:text-lg">در حال تحویل</p>
+                                </div>
+                                {% elif order.status == 'تحویل داده شده' %}
+                                <div class="flex items-center gap-x-2 text-success">
+                                    <p class="font-medium md:text-lg">تحویل داده شده</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="flex flex-col gap-6 lg:flex-row lg:justify-between xl:gap-16">
+                                <div class="flex flex-col gap-4 md:flex-row">
+                                    <div class="flex items-center justify-between gap-x-2 md:justify-start">
+                                        <div class="text-sm text-text/60 md:text-base">
+                                            شماره سفارش
+                                        </div>
+                                        <div class="text-sm text-text/95 md:text-base">
+                                            {{order.id}}
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between gap-x-2 md:justify-start">
+                                        <div class="text-sm text-text/60 md:text-base">
+                                            مبلغ کل
+                                        </div>
+                                        <div class="flex items-center gap-1 text-primary">
+                                            <div class="font-bold md:text-lg">{{order.paid|intcomma}}</div>
+                                            <div class="text-sm md:text-base">تومان</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-8">
+                        <h3 class="mb-8 flex items-center gap-x-4 text-lg text-text/80">
+                            <span class="h-2 w-2 rounded-full bg-primary"></span> آدرس
+                            تحویل سفارش
+                        </h3>
+                        <div class="rounded-lg border p-4 shadow">
+                            <div class="mb-4 flex items-center justify-between gap-x-2 sm:mb-2">
+                                <p class="line-clamp-2 h-10 text-sm text-text/95 xs:text-base sm:line-clamp-1 sm:h-6">
+                                    {{order.address.address}}
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between gap-x-2">
+                                <p class="line-clamp-1 text-sm text-text/60">
+                                    {{order.address.receiver_first_name}} {{order.address.receiver_last_name}}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-8">
+                        <h3 class="mb-8 flex items-center gap-x-4 text-lg text-text/80">
+                            <span class="h-2 w-2 rounded-full bg-primary"></span> اقلام
+                            سفارش <span class="text-sm text-text/60"> ( {{order_items.count}} کالا ) </span>
+                        </h3>
+                        <ul class="divide-y divide-border">
+                            {% for order_item in order_items %}
+                            <li>
+                                <div class="py-4 sm:py-6">
+                                    <div
+                                        class="grid grid-cols-2 items-center justify-start gap-2 xs:grid-cols-3 xs:gap-6 sm:grid-cols-4 xl:grid-cols-6">
+                                        <div class="row-span-2 min-w-fit xs:mx-auto">
+                                            <a href="{% url 'product_detail_page' order_item.product.slug %}">
+                                                <img src="{{order_item.product.image.url}}"
+                                                    alt="{{order_item.product.name}}"
+                                                    class="h-25 w-25 rounded-lg object-cover sm:h-28 sm:w-28" />
+                                            </a>
+                                        </div>
+                                        <div class="row-span-2 space-y-3 xs:col-span-2 sm:col-span-3 xl:col-span-5">
+                                            <a href="{% url 'product_detail_page' order_item.product.slug %}"
+                                                class="line-clamp-2 text-sm md:text-base">
+                                                {{order_item.product.name}}
+                                            </a>
+                                            <div class="flex flex-col gap-2">
+                                                {% if order_item.color %}
+                                                <div class="flex items-center gap-2">
+                                                    <div>رنگ</div>
+                                                    <div>
+                                                        <div class="h-6 w-6 rounded-full border-2"
+                                                            style="background-color: {{order_item.color.color_code}}"></div>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-x-2 xs:justify-center">
+                                            <div
+                                                class="flex h-10 w-24 items-center justify-center gap-x-3 rounded-lg border px-4 py-1 sm:w-28">
+                                                <div
+                                                    class="flex h-5 w-5 select-none items-center justify-center text-sm font-medium sm:h-6 sm:w-6 sm:text-lg">
+                                                    {{order_item.count}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row-span-2 xs:col-span-2 sm:col-span-3 xl:col-span-5">
+                                            {% if order_item.product.is_sale %}
+                                            <del
+                                                class="flex items-center gap-1 text-sm text-warning xs:col-span-2 sm:col-span-3 lg:text-lg xl:col-span-5">
+                                                {{order_item.product.price|intcomma}}
+                                            </del>
+                                            <div
+                                                class="flex items-center gap-1 text-primary xs:col-span-2 sm:col-span-3 lg:text-lg xl:col-span-5">
+                                                <span class="font-bold">{{order_item.product.sale_price|intcomma}}</span>
+                                                <span class="text-sm lg:text-base"> تومان</span>
+                                            </div>
+                                            {% else %}
+                                            <div
+                                                class="flex items-center gap-1 text-primary xs:col-span-2 sm:col-span-3 lg:text-lg xl:col-span-5">
+                                                <span class="font-bold">{{order_items.product.price|intcomma}}</span>
+                                                <span class="text-sm lg:text-base"> تومان</span>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

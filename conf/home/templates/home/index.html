@@ -1,0 +1,20 @@
+{% extends 'shared/base.html' %}
+{% block page_title %}صفحه اصلی{% endblock %}
+{% block meta_description %}فروشگاه {{site_setting.site_name}} | خرید اسان و ارزان و امن{% endblock %}
+
+{% block content%}
+
+<main class="flex-grow bg-background pt-[106px]">
+
+{% include 'includes/story_section.html' %}
+{% include 'includes/banners_section.html' %}
+{% include 'includes/new_products_section.html' %}
+{% include 'includes/categories_section.html' %}
+{% include 'includes/2banner_section.html' %}
+{% include 'includes/special_sale_section.html' %}
+{% include 'includes/brands.html' %}
+{% include 'includes/best_saller_section.html' %}
+
+</main>
+
+{% endblock%}

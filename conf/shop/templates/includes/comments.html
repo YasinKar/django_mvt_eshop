@@ -1,0 +1,478 @@
+{% load static %}
+
+<div class="py-6">
+    <div id="comment" class="-translate-y-60"></div>
+    <div class="relative mb-16 w-fit text-2xl font-medium">
+        دیدگاه ها
+        <span class="absolute right-0 top-10 h-[3px] w-full rounded-full bg-primary"></span>
+    </div>
+    <div class="grid grid-cols-12 gap-y-8 md:gap-8">
+        <!-- Submit new Comment -->
+        <div class="col-span-12 md:col-span-4 lg:col-span-3">
+            <div class="relative p-2">
+                <form method="post" action="{% url 'product_detail_page' product.slug %}"
+                    class="grid grid-cols-2 gap-4 md:sticky md:top-32" id="commentForm">
+                    {% csrf_token %}
+                    <div class="lg:text-lg" id="commentTitle">ثبت دیدگاه</div>
+                    <input type="hidden" id="replayId" name="replay">
+                    <div class="col-span-2">
+                        <label for="subject" class="sr-only"> عنوان </label>
+                        <input name="title" placeholder="عنوان" type="text" id="subject" required
+                            class="mb-2 w-full rounded-lg border bg-transparent px-4 py-2.5 outline-none duration-300 placeholder:duration-300 focus:border-primary focus:placeholder:-translate-x-2" />
+                    </div>
+                    <div class="col-span-2 mb-2">
+                        <div class="mb-4 text-sm text-text/80">
+                            این محصول را به دیگران پیشنهاد
+                        </div>
+                        <fieldset class="flex items-center gap-4">
+                            <legend class="sr-only">پیشنهاد</legend>
+                            <div class="w-full">
+                                <input id="suggest-like" type="radio" name="recommend" value="True" class="peer hidden"
+                                    required /><label for="suggest-like"
+                                    class="relative block cursor-pointer rounded-lg border p-2 shadow duration-200 hover:border-border/50 peer-checked:border-success">
+                                    <div class="flex items-center justify-center gap-x-2 text-success">
+                                        <div class="i-lucide-thumbs-up size-5"></div>
+                                        <p class="text-sm xs:text-base">میکنم</p>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="w-full">
+                                <input id="suggest-dislike" type="radio" name="recommend" value="False"
+                                    class="peer hidden" required /><label for="suggest-dislike"
+                                    class="relative block cursor-pointer rounded-lg border p-2 shadow duration-200 hover:border-border/50 peer-checked:border-warning">
+                                    <div class="flex items-center justify-center gap-x-2 text-warning">
+                                        <div class="i-lucide-thumbs-down size-5"></div>
+                                        <p class="text-sm xs:text-base">نمیکنم</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="col-span-2">
+                        <label for="message" class="sr-only">
+                            متن دیدگاه
+                        </label>
+                        <textarea name="message" rows="3" placeholder="متن دیدگاه" id="message"
+                            class="w-full rounded-lg border bg-transparent px-4 py-2.5 outline-none duration-300 placeholder:duration-300 focus:border-primary focus:placeholder:-translate-x-2"
+                            required></textarea>
+                    </div>
+
+                    <div class="text-warning">
+                        {% for field in form %}
+                        {% for error in field.errors %}
+                        {{ error }}
+                        {% endfor %}
+                        {% endfor %}
+                    </div>
+
+                    <div class="col-span-2 flex justify-end">
+                        <button class="btn-primary px-4 py-2" type="submit">
+                            ثبت دیدگاه
+                        </button>
+                    </div>
+                </form>
+                {% if not request.user.is_authenticated %}
+                <div class="absolute inset-0 flex items-center justify-center rounded-lg backdrop-blur-sm">
+                    <a href="{% url 'login_page' %}" class="btn-primary px-4 py-2">
+                        ورود / ثبت نام
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="order-first col-span-12 mb-10 overflow-hidden md:order-last md:col-span-8 lg:col-span-9">
+            <!-- Desktop Comment -->
+            <div class="hidden md:block">
+                {% if product.comments.exists %}
+                <ul class="mb-8 max-h-[500px] space-y-4 overflow-y-auto pl-4">
+                    {% for comment in product.comments.all %}
+                    {% if not comment.replay %}
+                    <li>
+                        <div class="py-6">
+                            <div class="mb-2 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div>{{ comment.user.username }}</div>
+                                    <div class="text-sm text-text/60">
+                                        {{ comment.date }}
+                                    </div>
+                                </div>
+                                <button id="replayButton" value="{{comment.id}}"
+                                    class="flex items-center gap-1 text-sm text-primary duration-300 hover:text-primary/80">
+                                    پاسخ ({{ comment.replies.count }})
+                                    <div class="i-lucide-chevron-left size-4"></div>
+                                </button>
+                            </div>
+
+                            <div class="mb-4 leading-relaxed xl:text-lg">
+                                {{ comment.title }}
+                            </div>
+                            {% if comment.recommend %}
+                            <div class="mb-6 flex items-center gap-x-4 border-b pb-6">
+                                <div class="flex items-center gap-x-2 text-success">
+                                    <div class="i-lucide-thumbs-up size-6"></div>
+                                    پیشنهاد میکنم
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="mb-6 flex items-center gap-x-4 border-b pb-6">
+                                <div class="flex items-center gap-x-2 text-warning">
+                                    <div class="i-lucide-thumbs-down size-6"></div>
+                                    پیشنهاد نمیکنم
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="mb-6 border-b pb-6">
+                                <p class="line-clamp-4 text-sm text-text/80">
+                                    {{ comment.message }}
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-end gap-8">
+                                <div class="text-sm text-text/60">
+                                    آیا این دیدگاه برایتان مفید بود؟
+                                </div>
+                                <button
+                                    class="flex items-center gap-2 text-success duration-300 hover:text-success/80 disabled:text-success/50 disabled:hover:text-success/40">
+                                    <span class="text-sm"> {{ comment.likes }} </span>
+                                    <span class="i-lucide-thumbs-up size-6"></span>
+                                </button>
+                                <button
+                                    class="flex items-center gap-2 text-warning duration-300 hover:text-warning/80 disabled:text-warning/50 disabled:hover:text-warning/40">
+                                    <span class="text-sm"> {{ comment.dislikes }} </span>
+                                    <span class="i-lucide-thumbs-down size-6"></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Replies -->
+                        {% if comment.replies.exists %}
+                        <ul class="mr-4 space-y-4 border-r pr-4">
+                            {% for reply in comment.replies.all %}
+                            <li>
+                                <div>
+                                    <div class="mb-8 flex items-center gap-2">
+                                        <div>{{ reply.user.username }}</div>
+                                        {% if reply.user.is_seller %}
+                                        <div class="rounded-full bg-primary/10 px-4 py-1 text-sm text-primary">
+                                            فروشنده
+                                        </div>
+                                        {% endif %}
+                                        <div class="text-sm text-text/60">
+                                            {{ reply.date }}
+                                        </div>
+                                    </div>
+
+                                    <div class="border-b pb-6">
+                                        <p class="line-clamp-4 text-sm text-text/80">
+                                            {{ reply.message }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <h2 class="flex items-center justify-center">نظری برای این محصول درج نشده است</h2>
+                {% endif %}
+            </div>
+            <!-- Mobile Comment -->
+            <div class="space-y-4 md:hidden">
+                {% if product.comments.exists %}
+                <div class="swiper product-comment-swiper">
+                    <div class="swiper-wrapper">
+                        {% for comment in product.comments.all|slice:":3" %}
+                        {% if not comment.replay %}
+                        <div class="swiper-slide">
+                            <div class="flex h-64 flex-col rounded-lg border">
+                                <div aria-controls="comment-detail-drawer-{{comment.id}}"
+                                    data-drawer-show="comment-detail-drawer-{{comment.id}}"
+                                    data-drawer-placement="bottom"
+                                    data-drawer-target="comment-detail-drawer-{{comment.id}}" type="button"
+                                    class="flex-grow cursor-pointer px-4 pt-6">
+                                    <div class="mb-4 flex items-center gap-2">
+                                        <div class="truncate">{{ comment.user.username }}</div>
+                                    </div>
+                                    <div class="mb-4 flex items-center justify-between">
+                                        {% if comment.recommend %}
+                                        <div class="flex items-center gap-2 text-success">
+                                            <div class="i-lucide-thumbs-up size-5"></div>
+                                            پیشنهاد میکنم
+                                        </div>
+                                        {% else %}
+                                        <div class="flex items-center gap-2 text-warning">
+                                            <div class="i-lucide-thumbs-down size-5"></div>
+                                            پیشنهاد نمیکنم
+                                        </div>
+                                        {% endif %}
+                                        <div class="text-sm text-primary">{{comment.replies.count}} پاسخ</div>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <h5 class="truncate text-sm leading-relaxed">
+                                            {{comment.title}}
+                                        </h5>
+                                        <p class="line-clamp-2 text-sm leading-relaxed text-text/80">
+                                            {{comment.message}}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between px-4 pb-6">
+                                    <div class="flex items-center gap-6">
+                                        <button
+                                            class="relative flex items-center gap-2 text-success duration-300 hover:text-success/80 disabled:text-success/50 disabled:hover:text-success/40">
+                                            <span class="i-lucide-thumbs-up size-6"></span>
+
+                                            <span class="absolute -right-2 top-6 text-sm">
+                                                {{comment.likes}}
+                                            </span>
+                                        </button>
+                                        <button
+                                            class="relative flex items-center gap-2 text-warning duration-300 hover:text-warning/80 disabled:text-warning/50 disabled:hover:text-warning/40">
+                                            <span class="i-lucide-thumbs-down size-6"></span>
+                                            <span class="absolute -right-2 top-6 text-sm">
+                                                {{comment.dislikes}}
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div class="text-sm text-text/60">
+                                        {{comment.date}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                        <div class="swiper-slide">
+                            <button aria-controls="comment-list-drawer" data-drawer-show="comment-list-drawer"
+                                data-drawer-placement="bottom" data-drawer-target="comment-list-drawer" type="button"
+                                class="flex h-64 w-full items-center justify-center">
+                                <div class="flex flex-col items-center justify-center gap-y-4 text-primary">
+                                    <div class="rounded-full border border-primary p-2">
+                                        <div class="i-lucide-chevron-left size-6"></div>
+                                    </div>
+                                    <div>مشاهده بیشتر</div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <h2 class="flex items-center justify-center">نظری برای این محصول درج نشده است</h2>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- comments List Drawer -->
+<div id="comment-list-drawer"
+    class="fixed inset-x-0 bottom-0 z-40 mx-auto h-full max-h-[90dvh] w-full translate-y-full rounded-t-xl border-t bg-muted transition-transform duration-500 lg:max-w-3xl"
+    tabindex="-1" data-modal-backdrop="static" aria-labelledby="comments-more-drawer">
+    <div class="flex h-full flex-col gap-4">
+        <div class="flex items-center justify-between p-4">
+            <div class="text-lg font-medium">دیدگاه ها</div>
+            <button class="text-text/60 duration-300 hover:text-text/95" data-drawer-hide="comment-list-drawer"
+                type="button">
+                <div class="i-lucide-x size-6"></div>
+
+                <span class="sr-only">Close menu</span>
+            </button>
+        </div>
+
+        <div class="grow overflow-y-auto pb-10">
+            <ul class="space-y-6 px-4">
+                {% for comment in product.comments.all %}
+                {% if not comment.replay %}
+                <li>
+                    <div class="flex h-64 flex-col rounded-lg border">
+                        <div aria-controls="comment-detail-drawer-{{comment.id}}"
+                            data-drawer-show="comment-detail-drawer-{{comment.id}}" data-drawer-placement="bottom"
+                            data-drawer-target="comment-detail-drawer-{{comment.id}}" type="button"
+                            class="flex-grow cursor-pointer px-4 pt-6">
+                            <div class="mb-4 flex items-center gap-2">
+                                <div class="truncate">{{comment.user.username}}</div>
+                                <div class="text-sm text-primary">{{comment.replies.count}} پاسخ</div>
+                            </div>
+                            <div class="mb-4 flex items-center gap-x-2 text-warning">
+                                <div class="i-lucide-thumbs-down size-5"></div>
+                                پیشنهاد نمیکنم
+                            </div>
+                            <div class="space-y-2">
+                                <h5 class="truncate text-sm leading-relaxed">
+                                    {{comment.title}}
+                                </h5>
+                                <p class="line-clamp-2 text-sm leading-relaxed text-text/80">
+                                    {{comment.message}}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between px-4 pb-6">
+                            <div class="flex items-center gap-6">
+                                <button
+                                    class="relative flex items-center gap-2 text-success duration-300 hover:text-success/80 disabled:text-success/50 disabled:hover:text-success/40">
+                                    <span class="i-lucide-thumbs-up size-6"></span>
+
+                                    <span class="absolute -right-2 top-6 text-sm"> {{comment.likes}} </span>
+                                </button>
+                                <button
+                                    class="relative flex items-center gap-2 text-warning duration-300 hover:text-warning/80 disabled:text-warning/50 disabled:hover:text-warning/40">
+                                    <span class="i-lucide-thumbs-down size-6"></span>
+                                    <span class="absolute -right-2 top-6 text-sm"> {{comment.dislikes}} </span>
+                                </button>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="text-xs text-text/60"> {{comment.date}} </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% for comment in product.comments.all %}
+{% if not comment.replay %}
+<!-- Comment Detail Drawer -->
+<div id="comment-detail-drawer-{{comment.id}}"
+    class="fixed inset-x-0 bottom-0 z-40 mx-auto h-full max-h-[90dvh] w-full translate-y-full overflow-y-auto rounded-t-xl border-t bg-muted transition-transform duration-500 lg:max-w-3xl"
+    tabindex="-1" data-modal-backdrop="static" aria-labelledby="comment-detail-drawer">
+    <div class="flex h-full flex-col gap-4">
+        <div class="flex items-center justify-between p-4">
+            <div class="text-lg font-medium">جزئیات دیدگاه</div>
+            <button class="text-text/60 duration-300 hover:text-text/95"
+                data-drawer-hide="comment-detail-drawer-{{comment.id}}" type="button">
+                <div class="i-lucide-x size-6"></div>
+
+                <span class="sr-only">Close menu</span>
+            </button>
+        </div>
+
+        <div class="grow overflow-y-auto pb-10">
+            <!-- Detail -->
+            <div class="mb-6 px-4 py-2">
+                <div class="mb-2 flex items-center gap-2">
+                    <div>{{ comment.user.username }}</div>
+                    <div class="text-sm text-text/60">{{ comment.date }}</div>
+                </div>
+
+                <div class="mb-4 leading-relaxed xl:text-lg">{{ comment.title }}</div>
+                {% if comment.recommend %}
+                <div class="mb-6 flex items-center gap-x-4 border-b pb-6">
+                    <div class="flex items-center gap-x-2 text-success">
+                        <div class="i-lucide-thumbs-up size-6"></div>
+                        پیشنهاد میکنم
+                    </div>
+                </div>
+                {% else %}
+                <div class="mb-6 flex items-center gap-x-4 border-b pb-6">
+                    <div class="flex items-center gap-x-2 text-warning">
+                        <div class="i-lucide-thumbs-down size-6"></div>
+                        پیشنهاد نمیکنم
+                    </div>
+                </div>
+                {% endif %}
+                <div class="mb-6 border-b pb-6">
+                    <p class="text-sm text-text/80">{{comment.message}}</p>
+                </div>
+                <div class="flex items-center justify-end gap-4">
+                    <div class="text-xs text-text/60 xs:text-sm">
+                        آیا این دیدگاه برایتان مفید بود؟
+                    </div>
+                    <button
+                        class="flex items-center gap-2 text-success duration-300 hover:text-success/80 disabled:text-success/50 disabled:hover:text-success/40">
+                        <span class="text-sm"> {{ comment.likes }} </span>
+
+                        <span class="i-lucide-thumbs-up size-6"></span>
+                    </button>
+                    <button
+                        class="flex items-center gap-2 text-warning duration-300 hover:text-warning/80 disabled:text-warning/50 disabled:hover:text-warning/40">
+                        <span class="text-sm"> {{ comment.dislikes }} </span>
+                        <span class="i-lucide-thumbs-down size-6"></span>
+                    </button>
+                </div>
+            </div>
+            <!-- Submit Reply-->
+            <form class="mb-6 grid grid-cols-2 gap-4 px-4" method="post"
+                action="{% url 'product_detail_page' product.slug %}">
+                {% csrf_token %}
+                <div class="lg:text-lg">ثبت پاسخ</div>
+                <div class="col-span-2">
+                    <label for="reply" class="sr-only"> متن پاسخ </label>
+                    <input type="hidden" name="replay" value="{{comment.id}}">
+                    <input type="hidden" name="title" value="پاسخ به نظر ({{comment.id}})">
+                    <input type="hidden" name="recommend" value="comment.recommend">
+                    <textarea rows="3" placeholder="متن پاسخ" type="text" name="message"
+                        class="mb-2 w-full rounded-lg border bg-transparent px-4 py-2.5 outline-none duration-300 placeholder:duration-300 focus:border-primary focus:placeholder:-translate-x-2"
+                        required></textarea>
+
+                    <div class="text-warning">
+                        {% for field in form %}
+                        {% for error in field.errors %}
+                        {{ error }}
+                        {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="col-span-2 flex justify-end">
+                    <button class="btn-primary px-4 py-2">ثبت پاسخ</button>
+                </div>
+            </form>
+            <!-- Replies -->
+            <div class="px-4">
+                <p class="mb-8 text-lg font-medium">پاسخ ها ( {{comment.replies.count}} )</p>
+                <ul class="space-y-4">
+                    {% for reply in comment.replies.all %}
+                    <li>
+                        <div>
+                            <div class="mb-8 flex items-center gap-2">
+                                <div>{{reply.user.username}}</div>
+                                <div class="text-sm text-text/60">{{reply.date}}</div>
+                            </div>
+
+                            <div class="border-b pb-6">
+                                <p class="text-sm text-text/80">{{reply.message}}</p>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+
+<script>
+    const replayId = document.getElementById('replayId');
+
+    const commentTitle = document.getElementById('commentTitle');
+
+    const replayButton = document.getElementById('replayButton')
+
+    replayButton.addEventListener('click', () => {
+        replayId.value = replayButton.value
+
+        const commentForm = document.getElementById('commentForm');
+        const subject = document.getElementById('subject');
+
+        commentForm.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+        });
+
+        commentTitle.innerHTML = `ثبت دیدگاه (پاسخ به نظر ${replayButton.value})`
+
+        subject.select();
+    })
+
+</script>
